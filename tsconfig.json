@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "es6",
+    "target": "es6",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "moduleResolution": "node",
+    "strict": true,
+    // "skipLibCheck": true,
+    // "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./src",
+    "jsx": "react",
+  },
+  "include": [
+    "./ts/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
