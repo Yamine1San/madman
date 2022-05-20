@@ -1,13 +1,13 @@
 /* eslint-disable import/first */
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
-import {globalState, stateNameCard} from "../config/appConfig";
+import {globalState, stateNameCard, updateAccountDataInterval} from "../config/appConfig";
 import {DetailController} from "../controller/DetailController";
 
 function Card(Props: any) {
-    const r = Props.r;
+    const [r, setR] = useState(Props.r);
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [cnt_agree, setAgreeCount] = useState(r.cnt_agree);
@@ -66,6 +66,23 @@ function Card(Props: any) {
         DetailController.render(r, 1, globalState.page);
     };
 
+    useEffect(() => {
+        const date = new Date();
+        if (r.account_upd_date.seconds < Math.floor(date.getTime() / 1000-updateAccountDataInterval)) {
+            console.log(r.screen_name+'は古いので更新します');
+            const vo = new MadmenVolume();
+            vo.r = r;
+            const madmen = new MadmenService();
+            madmen.updateAccountData(vo).then((result) => {
+                setSuccessMessage(madmen.getSuccessString());
+                setErrorMessage(madmen.getErrorString());
+                if (result) {
+                    setR(vo.r);
+                }
+            });
+        }
+    }, []);
+
     return (
         <React.StrictMode>
 
@@ -74,10 +91,9 @@ function Card(Props: any) {
             <br/>キチガイランク <b>{r.cnt_point}</b>
             <br/><img src={r.image_url} style={{width: '90px'}} alt={r.screen_name}/>
             <br/>登録日時:{YmdHis(r.add_date.seconds)}
-
+            <br/>データ更新日時:{YmdHis(r.account_upd_date.seconds)}
             <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: succcessMessage}}></div>
             <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
-
             <button onClick={handleAgreeButtonClick}
                     data-id={r.id}
                     data-app_kb={r.app_kb}

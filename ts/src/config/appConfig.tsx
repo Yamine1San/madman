@@ -48,3 +48,6 @@ export const globalRoot: globalRootType = {
 
 export const stateNameListWrapper: string = 'ListWrapper';
 export const stateNameCard: string = 'Card';
+
+// アカウント名や画像URLの更新間隔は6時間
+export const updateAccountDataInterval = 60 * 60 * 6;

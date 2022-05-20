@@ -12,6 +12,7 @@
     "no-unreachable": true,
     "no-empty": false,
     "no-shadowed-variable": false,
+    "no-namespace": false,
     "only-arrow-functions": false,
     "comment-format": false,
     "semicolon": [
