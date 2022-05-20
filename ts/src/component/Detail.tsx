@@ -88,9 +88,12 @@ function Detail(Props: any) {
 
             {Props.history_back ? (
                 <a href="/" onClick={handleBackLinkClick}>戻る</a>
+            ) : Props.page ? (
+                <a href={'/l/'+Props.page} >戻る</a>
             ) : (
                 <a href="/">一覧へ</a>
             )}
+            <br/>
 
             {1 === r.app_kb ? '@' : null}{r.screen_name}
             <br/>{r.user_name}

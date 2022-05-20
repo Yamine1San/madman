@@ -57,12 +57,14 @@ function Card(Props: any) {
     };
 
     const handleDetailButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        localStorage.setItem(stateNameCard+r.id, JSON.stringify({'page':globalState.page}));
         window.history.pushState({
             'stateName': stateNameCard,
             'r': r,
             'history_back': 1,
+            'page':globalState.page
         }, '', '/d/'+r.id);
-        renderDetail(r, 1);
+        renderDetail(r, 1, globalState.page);
     };
 
     return (
