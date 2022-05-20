@@ -146,7 +146,7 @@ export class AppVolume {
      * @param params
      * @param value
      */
-    set(params: any, value?: any) {
+    set(params: any, value?: any):AppVolume {
 
         if ('object' === typeof params) {
             for (const key of Object.keys(params)) {
@@ -201,7 +201,7 @@ export class AppVolume {
      *
      * @param page 明細ページング処理のページ番号
      */
-    set_page(page: number) {
+    set_page(page: number):AppVolume {
         this._page = page;
         if (page < 1) {
             this._page = 1;
@@ -219,7 +219,7 @@ export class AppVolume {
     /**
      * @param limit 明細ページング処理の明細数
      */
-    set_limit(limit: number) {
+    set_limit(limit: number):AppVolume {
         this._limit = limit;
         if (this._max_limit < this._limit) {
             this._limit = this._max_limit;
@@ -237,7 +237,7 @@ export class AppVolume {
     /**
      * @param max_limit 明細ページング処理の最大明細数
      */
-    set_max_limit(max_limit: number) {
+    set_max_limit(max_limit: number):AppVolume {
         this._max_limit = max_limit;
         if (this._max_limit < this._limit) {
             this._limit = this._max_limit;
@@ -248,7 +248,7 @@ export class AppVolume {
     /**
      * @param total 総件数
      */
-    set_total(total: number) {
+    set_total(total: number):AppVolume {
         this._total = total;
         return this;
     }
@@ -281,7 +281,7 @@ export class AppVolume {
     /**
      * @param allows
      */
-    set_sort_key_allows(allows = {}) {
+    set_sort_key_allows(allows = {}):AppVolume {
         this._sort_key_allows = allows;
         return this;
     }
@@ -314,9 +314,9 @@ export class AppVolume {
     /**
      * @param sort_key
      */
-    set_sort_key(sort_key: string) {
+    set_sort_key(sort_key: string):AppVolume {
         if (! this.is_allowed_key(sort_key)) {
-            return;
+            return this;
         }
         this._sort_key = sort_key;
         return this;
@@ -332,9 +332,9 @@ export class AppVolume {
     /**
      * @param sort_ud 'asc' OR 'desc'
      */
-    set_sort_ud(sort_ud: string | undefined) {
+    set_sort_ud(sort_ud: string | undefined):AppVolume {
         if ('' === sort_ud) {
-            return;
+            return this;
         }
         this._sort_ud = this._get_sort_ud(sort_ud);
         return this;
@@ -351,12 +351,12 @@ export class AppVolume {
      * @param sort_key
      * @param sort_ud 'asc' OR 'desc'
      */
-    add_sort_key(sort_key: string | {}, sort_ud?: string) {
+    add_sort_key(sort_key: string | {}, sort_ud?: string):AppVolume {
         if ('object' === typeof sort_key) {
             for (const tmp of Object.keys(sort_key)) {
                 this._add_sort_key(tmp, sort_ud);
             }
-            return;
+            return this;
         }
         // @ts-ignore
         this._add_sort_key(sort_key, sort_ud);
