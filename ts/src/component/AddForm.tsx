@@ -2,10 +2,11 @@
 
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
-import {appKbDefaultValue, appKbMap, globalState} from "../config/appConfig";
+import {appKbDefaultValue, appKbMap, globalRoot, globalState} from "../config/appConfig";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {toHalfWidth} from "../lib/functions";
 import ListWrapper from "./ListWrapper";
+import {ListController} from "../controller/ListController";
 
 /**
  *
@@ -50,7 +51,9 @@ function AddForm() {
                     window.history.pushState({}, '', '/');
                 }
 
+                // 登録日時順
                 const sort_key = '2';
+                // 降順
                 const sort_ud = 'desc';
 
                 // データの更新
@@ -58,20 +61,14 @@ function AddForm() {
                 vo.data_reload = 1;
                 vo.set_page(1);
                 vo.set_limit(globalState.limit);
-                vo.set_sort_key(sort_key); // 登録日時順
-                vo.set_sort_ud(sort_ud); // 登録日時順
+                vo.set_sort_key(sort_key);
+                vo.set_sort_ud(sort_ud);
                 const madmen = new MadmenService();
                 // 一覧更新
                 madmen.paging(vo).then(() => {
                     vo.data_reload = 0;
                     // 更新後に再描画
-                    // @ts-ignore
-                    const madmen_list = ReactDOM.createRoot(document.getElementById('madmen_list'));
-                    madmen_list.render(
-                        <React.StrictMode>
-                            <ListWrapper vo={vo}/>
-                        </React.StrictMode>
-                    );
+                    ListController.render(vo);
                 });
             }
         });

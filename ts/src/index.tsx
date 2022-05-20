@@ -2,28 +2,31 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/site.css';
 import reportWebVitals from './reportWebVitals';
-import {addEventListenerListWrapper, indexListWrapper} from "./indexListWrapper";
-import {addEventListenerDetail, indexDetail} from "./indexDetail";
-// @ts-ignore
-export const root = ReactDOM.createRoot(document.getElementById('root'));
+import {DetailController} from "./controller/DetailController";
+import {ListWrapperController} from "./controller/ListWrapperController";
+import {globalState} from "./config/appConfig";
 
+// @ts-ignore
+globalState.rootRoot = ReactDOM.createRoot(document.getElementById('root'));
+
+// 戻る進む処理のためのpopstate登録
 window.addEventListener('popstate', (event) => {
-    if (event.hasOwnProperty('state') ) {
+    if (event.hasOwnProperty('state')) {
         if (! event.state.hasOwnProperty('stateName')) {
             window.location.href = '/';
             return;
         }
     }
 });
-addEventListenerListWrapper();
-addEventListenerDetail();
+ListWrapperController.addEventListener();
+DetailController.addEventListener();
 
-// ルーティング
+// ルーティング URIに応じてコントローラのアクション呼び出し
 if ('/' === window.location.pathname || window.location.pathname.startsWith('/l/')) {
-    indexListWrapper();
+    ListWrapperController.index();
 }
 else if (window.location.pathname.startsWith('/d/')) {
-    indexDetail();
+    DetailController.index();
 }
 else {
     window.location.href = '/';

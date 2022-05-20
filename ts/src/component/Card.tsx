@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
 import {globalState, stateNameCard} from "../config/appConfig";
-import {renderDetail} from "../indexDetail";
+import {DetailController} from "../controller/DetailController";
 
 function Card(Props: any) {
     const r = Props.r;
@@ -56,14 +56,14 @@ function Card(Props: any) {
     };
 
     const handleDetailButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        localStorage.setItem(stateNameCard+r.id, JSON.stringify({'page':globalState.page}));
+        localStorage.setItem(stateNameCard+r.id, JSON.stringify({'page': globalState.page}));
         window.history.pushState({
             'stateName': stateNameCard,
             'r': r,
             'history_back': 1,
-            'page':globalState.page
+            'page': globalState.page
         }, '', '/d/'+r.id);
-        renderDetail(r, 1, globalState.page);
+        DetailController.render(r, 1, globalState.page);
     };
 
     return (

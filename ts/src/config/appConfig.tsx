@@ -1,4 +1,4 @@
-/* jshint strict: true */
+import {Root} from "react-dom/client";
 
 export const mdApiKey: string =
     (undefined !== process.env.REACT_APP_VL_MD_API_KEY)
@@ -28,10 +28,22 @@ export const sortOrderMap: Map<string, string> = new Map();
 sortOrderMap.set('asc', '昇順');
 sortOrderMap.set('desc', '降順');
 
+export const sortKeyDefaultValue = '1';
+export const sortUdDefaultValue = 'desc';
 export const limitDefaultValue = 5;
 export const globalState = {
-    limit:limitDefaultValue,
+    limit: limitDefaultValue,
     page: 1,
+};
+
+type globalRootType = {
+    rootRoot: Root | undefined,
+    rootMadmenList: Root | undefined,
+};
+
+export const globalRoot: globalRootType = {
+    rootRoot: undefined,
+    rootMadmenList: undefined,
 };
 
 export const stateNameListWrapper: string = 'ListWrapper';

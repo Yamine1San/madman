@@ -3,6 +3,8 @@
 import React, {useState} from 'react';
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
+import {ListWrapperController} from "../controller/ListWrapperController";
+import {globalState, sortKeyDefaultValue, sortUdDefaultValue} from "../config/appConfig";
 
 function Detail(Props: any) {
     const r = Props.r;
@@ -76,10 +78,21 @@ function Detail(Props: any) {
         });
     };
 
-    const handleBackLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        window.history.back();
+    const handleHistoryBackLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.preventDefault();
+        window.history.back();
     };
+
+    const handleGotoListLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.preventDefault();
+        const vo = new MadmenVolume();
+        vo.set_limit(globalState.limit);
+        vo.set_sort_key(sortKeyDefaultValue);
+        vo.set_sort_ud(sortUdDefaultValue);
+        vo.set_page(e.currentTarget.dataset.page ? Number(e.currentTarget.dataset.page) : 1);
+        ListWrapperController.render(vo);
+    };
+
     const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setComment(e.target.value);
     };
@@ -88,11 +101,11 @@ function Detail(Props: any) {
         <React.StrictMode>
 
             {Props.history_back ? (
-                <a href="/" onClick={handleBackLinkClick}>戻る</a>
+                <a href="/" onClick={handleHistoryBackLinkClick}>戻る</a>
             ) : Props.page ? (
-                <a href={'/l/'+Props.page} >戻る</a>
+                <a href="/" onClick={handleGotoListLinkClick} data-page={Props.page}>戻る</a>
             ) : (
-                <a href="/">一覧へ</a>
+                <a href="/" onClick={handleGotoListLinkClick} data-page={1}>一覧へ</a>
             )}
             <br/>
 
