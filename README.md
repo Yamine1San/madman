@@ -1,6 +1,6 @@
 # キチガイデータベース
 
-http://madman-dev.f5.si/l/3
+http://madman.f5.si/l/3
 
 
 ## サイトの目的
