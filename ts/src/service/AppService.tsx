@@ -133,6 +133,7 @@ export class AppVolume {
     rs: any[] = [];
     r: any;
     result: boolean = false;
+    update_cols:string[] = [];
 
     constructor(params?: any) {
         this.r = {};

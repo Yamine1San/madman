@@ -36,8 +36,8 @@ export class MadmenService extends AppService {
             MadmenService.dataList = [];
             madmenDocs.forEach((cols) => {
                 const r = new MadmenCols({...cols.data(), id: cols.id});
-                if (! r.hasOwnProperty('comments')) {
-                    r['comments'] = [];
+                if (null === r.account_upd_date) {
+                    r['account_upd_date'] = {seconds: 0};
                 }
                 MadmenService.dataList.push(r);
             });
@@ -238,7 +238,9 @@ export class MadmenService extends AppService {
                 cnt_point: vo.r.cnt_point,
                 voted_ip: vo.r.voted_ip,
                 comments: vo.r.comments,
+                account_upd_date: serverTimestamp(),
                 add_date: serverTimestamp(),
+                upd_date: serverTimestamp(),
             });
 
             this.addSuccess(`${vo.r.user_name}がキチガイデータベースに登録されました。`);
@@ -249,6 +251,60 @@ export class MadmenService extends AppService {
             this.addError('メッセージ:'+e.getMessage());
             return false;
         }
+    }
+
+    /**
+     *
+     * @param vo
+     */
+    async update(vo: MadmenVolume) {
+        const constraints1 = {
+            id: {
+                presence: {
+                    allowEmpty: false,
+                    message: "^キチガイIDは必須です。",
+                },
+            },
+            app_kb: {
+                numericality: {
+                    onlyInteger: true,
+                    greaterThanOrEqualTo: 1,
+                    lessThanOrEqualTo: 2,
+                    message: "^アプリ区分は1～5でなければなりません。",
+                }
+            },
+        };
+
+        const errors1 = validate(vo.r, constraints1);
+        if (undefined !== errors1) {
+            this.addError(errors1);
+            return false;
+        }
+
+        // 読み込んでトランザクションかけて更新
+        const newData: any = {};
+        vo.update_cols.forEach((column_name) => {
+            // @ts-ignore
+            newData[column_name] = vo.r[column_name];
+        });
+
+        const madmenDocRef = doc(db, this.table, vo.r.id);
+        await runTransaction(db, async (transaction) => {
+            const madmenDoc = await getDoc(madmenDocRef);
+            if (! madmenDoc.exists()) {
+                throw new Error("Document does not exist!");
+            }
+            newData['upd_date'] = serverTimestamp();
+            transaction.update(madmenDocRef, newData);
+        });
+
+        if (! vo.none_update_message) {
+            this.addSuccess(`${vo.r.user_name}のデータを更新しました。`);
+        }
+
+        this.updateDataListRow(vo.r.id, newData);
+
+        return true;
     }
 
     /**
@@ -506,6 +562,29 @@ export class MadmenService extends AppService {
             break;
         }
     }
+
+    async updateAccountData(vo: MadmenVolume) {
+        if (1 === vo.r.app_kb) {
+            const twitter = new TwitterService();
+            if (! await twitter.getUserInfo(vo)) {
+                this.addError(twitter.getErrorMessage());
+                this.addSuccess(twitter.getSuccessMessage());
+                return false;
+            }
+        }
+        else {
+            this.addError('Twitter以外は未対応');
+            return false;
+        }
+        vo.none_update_message = true;
+        vo.r.account_upd_date = serverTimestamp();
+        vo.update_cols = ['screen_name', 'user_name', 'image_url', 'account_upd_date'];
+        const result = await this.update(vo);
+        if (result) {
+            this.addSuccess(`アカウントデータを最新状態に更新しました。`);
+        }
+        return result;
+    }
 }
 
 /**
@@ -522,6 +601,7 @@ export class MadmenVolume extends AppVolume {
     app_id: string = '';
     vote_kb: number = 0;
     comment: string = '';
+    none_update_message: boolean = false;
 
     protected _sort_key_allows: any = {
         '1': {
@@ -606,18 +686,30 @@ export class MadmenCols {
     cnt_point: number = 0;
 
     /**
-     * @var
+     * @var 投票済みIPアドレス
      */
     voted_ip: string[] = [];
 
     /**
-     *
+     * @var コメント
      */
     comments: string[] = [];
+
+    /**
+     * @var アカウントデータ更新日時
+     */
+        // @ts-ignore
+    account_upd_date: serverTimestamp = null;
 
     /**
      * @var 登録日時
      */
         // @ts-ignore
     add_date: serverTimestamp = null;
+
+    /**
+     * @var 更新日時
+     */
+        // @ts-ignore
+    upd_date: serverTimestamp = null;
 }
