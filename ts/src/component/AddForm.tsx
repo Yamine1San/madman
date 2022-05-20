@@ -3,7 +3,7 @@
 
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
-import {appKbDefaultValue, appKbMap, configObj} from "../config/appConfig";
+import {appKbDefaultValue, appKbMap, globalState} from "../config/appConfig";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {toHalfWidth} from "../lib/functions";
 import ListWrapper from "./ListWrapper";
@@ -58,7 +58,7 @@ function AddForm() {
                 const vo = new MadmenVolume();
                 vo.data_reload = 1;
                 vo.set_page(1);
-                vo.set_limit(configObj.limit);
+                vo.set_limit(globalState.limit);
                 vo.set_sort_key(sort_key); // 登録日時順
                 vo.set_sort_ud(sort_ud); // 登録日時順
                 const madmen = new MadmenService();

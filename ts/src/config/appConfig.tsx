@@ -29,7 +29,10 @@ sortOrderMap.set('asc', '昇順');
 sortOrderMap.set('desc', '降順');
 
 export const limitDefaultValue = 5;
-export const configObj = {limit:limitDefaultValue};
+export const globalState = {
+    limit:limitDefaultValue,
+    page: 1,
+};
 
 export const stateNameListWrapper: string = 'ListWrapper';
 export const stateNameCard: string = 'Card';

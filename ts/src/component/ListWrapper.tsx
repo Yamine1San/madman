@@ -4,7 +4,7 @@
 import React, {useEffect, useState} from 'react';
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import List from './List';
-import {configObj, sortOrderMap, stateNameListWrapper} from "../config/appConfig";
+import {globalState, sortOrderMap, stateNameListWrapper} from "../config/appConfig";
 
 function ListWrapper(Props: any) {
 
@@ -32,7 +32,8 @@ function ListWrapper(Props: any) {
         const tmpEndRow = vo.offset()+vo.limit();
         setEndRow((vo.total() < tmpEndRow) ? vo.total() : tmpEndRow);
         setTotalRow(vo.total());
-        configObj.limit = vo.limit();
+        globalState.limit = vo.limit();
+        globalState.page = vo.page();
     };
 
     const changeList = (vo: MadmenVolume) => {

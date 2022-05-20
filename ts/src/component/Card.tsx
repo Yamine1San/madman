@@ -4,7 +4,7 @@
 import React, {useState} from 'react';
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
-import {stateNameCard} from "../config/appConfig";
+import {globalState, stateNameCard} from "../config/appConfig";
 import {renderDetail} from "../indexDetail";
 
 function Card(Props: any) {
