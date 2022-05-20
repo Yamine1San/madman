@@ -9,6 +9,8 @@ function Detail(Props: any) {
     const r = Props.r;
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [succcessMessageAddComment, setSuccessMessageAddComment] = useState('');
+    const [errorMessageAddComment, setErrorMessageAddComment] = useState('');
     const [cnt_agree, setAgreeCount] = useState(r.cnt_agree);
     const [cnt_disagree, setDisAgreeCount] = useState(r.cnt_disagree);
     const [comment, setComment] = useState('');
@@ -58,15 +60,15 @@ function Detail(Props: any) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setSuccessMessage('');
-        setErrorMessage('');
+        setSuccessMessageAddComment('');
+        setErrorMessageAddComment('');
         const vo = new MadmenVolume();
         vo.comment = comment;
         vo.id = r.id;
         const madmen = new MadmenService();
         madmen.addComment(vo).then((newData: any) => {
-            setSuccessMessage(madmen.getSuccessString());
-            setErrorMessage(madmen.getErrorString());
+            setSuccessMessageAddComment(madmen.getSuccessString());
+            setErrorMessageAddComment(madmen.getErrorString());
             if (! newData) {
                 return;
             }
@@ -100,7 +102,10 @@ function Detail(Props: any) {
             <br/>キチガイランク <b>{r.cnt_point}</b>
             <br/><img src={r.image_url} style={{width: '90px'}} alt={r.screen_name}/>
             <br/>登録日時:{YmdHis(r.add_date.seconds)}
-            <br/>
+
+            <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: succcessMessage}}></div>
+            <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
+
             <button onClick={handleAgreeButtonClick}
                     data-id={r.id}
                     data-app_kb={r.app_kb}
@@ -121,9 +126,6 @@ function Detail(Props: any) {
                 <li>{comment}</li>
             </ul>
 
-            <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: succcessMessage}}></div>
-            <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
-
             <form onSubmit={handleSubmit}>
                 <textarea name="comment"
                           value={comment}
@@ -132,7 +134,9 @@ function Detail(Props: any) {
                           rows={6}
                 ></textarea>
 
-                <br/>
+                <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: succcessMessageAddComment}}></div>
+                <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessageAddComment}}></div>
+
                 <input type="submit" value="確定する"/>
             </form>
 

@@ -69,15 +69,16 @@ function Card(Props: any) {
 
     return (
         <React.StrictMode>
-            <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: succcessMessage}}></div>
-            <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
 
             {1 === r.app_kb ? '@' : null}{r.screen_name}
             <br/>{r.user_name}
             <br/>キチガイランク <b>{r.cnt_point}</b>
             <br/><img src={r.image_url} style={{width: '90px'}} alt={r.screen_name}/>
             <br/>登録日時:{YmdHis(r.add_date.seconds)}
-            <br/>
+
+            <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: succcessMessage}}></div>
+            <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
+
             <button onClick={handleAgreeButtonClick}
                     data-id={r.id}
                     data-app_kb={r.app_kb}
