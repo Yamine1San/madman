@@ -8,9 +8,11 @@ import {addEventListenerDetail, indexDetail} from "./indexDetail";
 export const root = ReactDOM.createRoot(document.getElementById('root'));
 
 window.addEventListener('popstate', (event) => {
-    if (! event.state.hasOwnProperty('stateName')) {
-        window.location.href = '/';
-        return;
+    if (event.hasOwnProperty('state') ) {
+        if (! event.state.hasOwnProperty('stateName')) {
+            window.location.href = '/';
+            return;
+        }
     }
 });
 addEventListenerListWrapper();

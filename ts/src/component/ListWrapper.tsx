@@ -39,7 +39,10 @@ function ListWrapper(Props: any) {
         const madmen = new MadmenService();
         madmen.paging(vo).then(() => {
             changeState(vo);
-            if (vo.page() !== page || 1 === vo.add_history) {
+            if (vo.page() !== page
+                || vo.sort_key() !== sort_key
+                || vo.sort_ud() !== sort_ud
+                || 1 === vo.add_history) {
                 vo.add_history = 0;
                 vo.set('stateName', stateNameListWrapper);
                 window.history.pushState(vo, '', '/l/'+vo.page());
