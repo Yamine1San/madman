@@ -1,4 +1,3 @@
-/* jshint strict: true */
 /* eslint-disable import/first */
 import {db} from '../config/firebase';
 import {

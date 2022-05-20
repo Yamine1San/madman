@@ -1,4 +1,3 @@
-/* jshint strict: true */
 /* eslint-disable import/first */
 import {AppService, AppVolume} from "./AppService";
 import {MadmenVolume} from "./MadmenService";

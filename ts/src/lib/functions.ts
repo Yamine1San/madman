@@ -1,4 +1,3 @@
-/* jshint strict: true */
 
 /**
  * 数値にカンマを付ける処理

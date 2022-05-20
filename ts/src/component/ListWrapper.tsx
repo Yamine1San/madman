@@ -1,4 +1,3 @@
-/* jshint strict: true */
 /* eslint-disable import/first */
 
 import React, {useEffect, useState} from 'react';

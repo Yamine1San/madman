@@ -1,4 +1,3 @@
-/* jshint strict: true */
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
