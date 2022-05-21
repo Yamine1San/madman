@@ -49,7 +49,6 @@ export class MadmenService extends AppService {
             const sort_key_allows = vo.sort_key_allows();
             const col = (sort_key_allows.hasOwnProperty(vo.sort_key())) ? sort_key_allows[vo.sort_key()].sort_key : 'cnt_point';
             if (col !== MadmenService.dataListSortColumn || vo.sort_ud() !== MadmenService.dataListSortOrder) {
-                console.log('並び替えを行う！！');
                 this.sort(vo);
             }
         }
@@ -593,7 +592,6 @@ export class MadmenService extends AppService {
 export class MadmenVolume extends AppVolume {
 
     protected _limit: number = 5;
-    add_history: number = 0;
     data_reload: number = 0;
 
     id: string = '';

@@ -1,10 +1,12 @@
 /* eslint-disable import/first */
 
-import React from 'react';
+import React from "react";
+import {Provider} from "react-redux";
+import {store} from "../redux/store";
 import {globalState, stateNameCard} from "../config/appConfig";
 import {MadmenCols, MadmenService} from "../service/MadmenService";
 import Detail from "../component/Detail";
-import {ListWrapperController} from "./ListWrapperController";
+import Title from "../component/Title";
 
 export class DetailController {
 
@@ -13,16 +15,22 @@ export class DetailController {
      */
     static addEventListener = () => {
         window.addEventListener('popstate', (event) => {
-            if (stateNameCard === event.state.stateName) {
-                this.render(event.state.r, event.state.history_back, event.state.page);
+            if (! event.state) {
+                return;
             }
+
+            if (stateNameCard !== event.state.stateName) {
+                return;
+            }
+
+            DetailController.render(event.state.r, event.state.history_back, event.state.page);
         });
     }
 
     /**
      *
      */
-    static index = () => {
+    static default = () => {
         const madmen = new MadmenService();
         const id = window.location.pathname.replace('/d/', '');
         madmen.find_by_id(id).then((r: MadmenCols | false) => {
@@ -41,11 +49,6 @@ export class DetailController {
         });
     }
 
-    private static handleGotoTopLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        ListWrapperController.render();
-        e.preventDefault();
-    }
-
     /**
      *
      * @param r
@@ -55,10 +58,10 @@ export class DetailController {
     static render = (r: MadmenCols, history_back: number, page: number) => {
         // @ts-ignore
         globalState.rootRoot.render(
-            <React.StrictMode>
-                <h1><a href="/" onClick={this.handleGotoTopLinkClick}>キチガイデータベース</a></h1>
+            <Provider store={store}>
+                <Title/>
                 <Detail r={r} history_back={history_back} page={page}/>
-            </React.StrictMode>
+            </Provider>
         );
     }
 }

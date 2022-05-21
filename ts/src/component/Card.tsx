@@ -1,12 +1,17 @@
 /* eslint-disable import/first */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {RootState} from "../redux/store";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
-import {globalState, stateNameCard, updateAccountDataInterval} from "../config/appConfig";
+import {stateNameCard, updateAccountDataInterval} from "../config/appConfig";
 import {DetailController} from "../controller/DetailController";
 
 function Card(Props: any) {
+
+    const page = useSelector((state: RootState) => state.list.page);
+
     const [r, setR] = useState(Props.r);
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -56,14 +61,14 @@ function Card(Props: any) {
     };
 
     const handleDetailButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        localStorage.setItem(stateNameCard+r.id, JSON.stringify({'page': globalState.page}));
+        localStorage.setItem(stateNameCard+r.id, JSON.stringify({'page': page}));
         window.history.pushState({
             'stateName': stateNameCard,
             'r': r,
             'history_back': 1,
-            'page': globalState.page
+            'page': page
         }, '', '/d/'+r.id);
-        DetailController.render(r, 1, globalState.page);
+        DetailController.render(r, 1, page);
     };
 
     useEffect(() => {

@@ -1,12 +1,17 @@
 /* eslint-disable import/first */
 
-import React, {useState} from 'react';
+import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../redux/store";
+import {setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
-import {ListWrapperController} from "../controller/ListWrapperController";
+import {IndexController} from "../controller/IndexController";
 import {globalState, sortKeyDefaultValue, sortUdDefaultValue} from "../config/appConfig";
 
 function Detail(Props: any) {
+    const dispatch = useDispatch();
+
     const r = Props.r;
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -85,12 +90,24 @@ function Detail(Props: any) {
 
     const handleGotoListLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.preventDefault();
+
         const vo = new MadmenVolume();
-        vo.set_limit(globalState.limit);
+        vo.set_page(e.currentTarget.dataset.page ? Number(e.currentTarget.dataset.page) : 1);
         vo.set_sort_key(sortKeyDefaultValue);
         vo.set_sort_ud(sortUdDefaultValue);
-        vo.set_page(e.currentTarget.dataset.page ? Number(e.currentTarget.dataset.page) : 1);
-        ListWrapperController.render(vo);
+        vo.set_limit(globalState.limit);
+
+        dispatch(setPage(vo.page()));
+        dispatch(setSortKey(vo.sort_key()));
+        dispatch(setSortUd(vo.sort_ud()));
+        dispatch(setLimit(vo.limit()));
+
+        // 履歴保存
+        IndexController.saveLocationData(vo);
+
+        if (null === document.getElementById('madman_list')) {
+            IndexController.render(vo);
+        }
     };
 
     const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -155,6 +172,5 @@ function Detail(Props: any) {
         </React.StrictMode>
     );
 }
-
 
 export default Detail;

@@ -272,6 +272,15 @@ export class AppVolume {
         return (this._page-1) * this._limit;
     }
 
+    page_rowno_start() {
+        return this.offset()+1;
+    }
+
+    page_rowno_end() {
+        const tmpEndRow = this.offset()+this.limit();
+        return (this.total() < tmpEndRow) ? this.total() : tmpEndRow;
+    }
+
     /**
      * @return int
      */

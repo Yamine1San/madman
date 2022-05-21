@@ -33,7 +33,6 @@ export const sortUdDefaultValue = 'desc';
 export const limitDefaultValue = 5;
 export const globalState = {
     limit: limitDefaultValue,
-    page: 1,
 };
 
 type globalRootType = {
@@ -46,7 +45,7 @@ export const globalRoot: globalRootType = {
     rootMadmenList: undefined,
 };
 
-export const stateNameListWrapper: string = 'ListWrapper';
+export const stateNameIndex: string = 'Index';
 export const stateNameCard: string = 'Card';
 
 // アカウント名や画像URLの更新間隔は6時間

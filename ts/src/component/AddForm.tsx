@@ -1,17 +1,17 @@
 /* eslint-disable import/first */
 
-import React, {useState} from 'react';
-import ReactDOM from 'react-dom/client';
-import {appKbDefaultValue, appKbMap, globalRoot, globalState} from "../config/appConfig";
+import React, {useState} from "react";
+import {useDispatch} from "react-redux";
+import {appKbDefaultValue, appKbMap, globalState} from "../config/appConfig";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {toHalfWidth} from "../lib/functions";
-import ListWrapper from "./ListWrapper";
-import {ListController} from "../controller/ListController";
+import {setLastPage, setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
 
 /**
  *
  */
-function AddForm() {
+const AddForm = () => {
+    const dispatch = useDispatch();
 
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -66,9 +66,11 @@ function AddForm() {
                 const madmen = new MadmenService();
                 // 一覧更新
                 madmen.paging(vo).then(() => {
-                    vo.data_reload = 0;
-                    // 更新後に再描画
-                    ListController.render(vo);
+                    dispatch(setPage(vo.page()));
+                    dispatch(setLastPage(vo.last_page()));
+                    dispatch(setSortKey(vo.sort_key()));
+                    dispatch(setSortUd(vo.sort_ud()));
+                    dispatch(setLimit(vo.limit()));
                 });
             }
         });
