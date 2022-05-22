@@ -13,9 +13,13 @@ const Title = () => {
     const handleGotoTopLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.preventDefault();
 
-        if (null === document.getElementById('madman_list')) {
-            IndexController.render();
-        }
+        const vo = new MadmenVolume();
+        vo.set_page(1);
+        vo.set_sort_key(sortKeyDefaultValue);
+        vo.set_sort_ud(sortUdDefaultValue);
+        vo.set_limit(globalState.limit);
+
+        IndexController.render(vo);
 
         dispatch(setPage(1));
         dispatch(setSortKey(sortKeyDefaultValue));
@@ -23,11 +27,6 @@ const Title = () => {
         dispatch(setLimit(globalState.limit));
 
         // 履歴保存
-        const vo = new MadmenVolume();
-        vo.set_page(1);
-        vo.set_sort_key(sortKeyDefaultValue);
-        vo.set_sort_ud(sortUdDefaultValue);
-        vo.set_limit(globalState.limit);
         IndexController.saveLocationData(vo);
     };
 

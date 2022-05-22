@@ -31,17 +31,24 @@ sortOrderMap.set('desc', '降順');
 export const sortKeyDefaultValue = '1';
 export const sortUdDefaultValue = 'desc';
 export const limitDefaultValue = 5;
-export const globalState = {
+
+export interface GlobalState {
+    limit: number;
+    list_add_popstate: boolean;
+}
+
+export const globalState: GlobalState = {
     limit: limitDefaultValue,
+    list_add_popstate: false,
 };
 
-type globalRootType = {
-    rootRoot: Root,
-};
+export interface GlobalRoot {
+    root: Root;
+}
 
-export const globalRoot: globalRootType = {
+export const globalRoot: GlobalRoot = {
     // @ts-ignore
-    rootRoot: undefined,
+    root: undefined,
 };
 
 export const stateNameIndex: string = 'Index';

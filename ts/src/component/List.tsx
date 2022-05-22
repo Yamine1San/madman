@@ -51,31 +51,31 @@ function List(Props: any) {
     });
 
     useEffect(() => {
-        window.addEventListener('popstate', (event) => {
-            if (! event.state) {
-                return;
-            }
+        if (! globalState.list_add_popstate) {
+            globalState.list_add_popstate = true;
+            window.addEventListener('popstate', (event) => {
+                if (! event.state) {
+                    return;
+                }
 
-            if (! event.state.hasOwnProperty('stateName')) {
-                return;
-            }
+                if (! event.state.hasOwnProperty('stateName')) {
+                    return;
+                }
 
-            if (stateNameIndex !== event.state.stateName) {
-                return;
-            }
+                if (stateNameIndex !== event.state.stateName) {
+                    return;
+                }
 
-            const vo = new MadmenVolume(event.state);
-
-            if (null === document.getElementById('madman_list')) {
+                const vo = new MadmenVolume(event.state);
                 IndexController.render(vo);
-            }
 
-            dispatch(setPage(vo.page()));
-            dispatch(setLastPage(vo.last_page()));
-            dispatch(setSortKey(vo.sort_key()));
-            dispatch(setSortUd(vo.sort_ud()));
-            dispatch(setLimit(vo.limit()));
-        });
+                dispatch(setPage(vo.page()));
+                dispatch(setLastPage(vo.last_page()));
+                dispatch(setSortKey(vo.sort_key()));
+                dispatch(setSortUd(vo.sort_ud()));
+                dispatch(setLimit(vo.limit()));
+            });
+        }
     }, []);
 
     const handlePreviousPage = () => {

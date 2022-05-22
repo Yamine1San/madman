@@ -97,6 +97,8 @@ function Detail(Props: any) {
         vo.set_sort_ud(sortUdDefaultValue);
         vo.set_limit(globalState.limit);
 
+        IndexController.render(vo);
+
         dispatch(setPage(vo.page()));
         dispatch(setSortKey(vo.sort_key()));
         dispatch(setSortUd(vo.sort_ud()));
@@ -104,10 +106,6 @@ function Detail(Props: any) {
 
         // 履歴保存
         IndexController.saveLocationData(vo);
-
-        if (null === document.getElementById('madman_list')) {
-            IndexController.render(vo);
-        }
     };
 
     const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

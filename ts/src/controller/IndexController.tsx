@@ -27,9 +27,7 @@ export class IndexController {
             }
 
             const vo = new MadmenVolume(event.state);
-            if (null === document.getElementById('madman_list')) {
-                IndexController.render(vo);
-            }
+            IndexController.render(vo);
         });
     }
 
@@ -55,6 +53,7 @@ export class IndexController {
         vo.set_sort_ud(sortUdDefaultValue);
 
         if (window_location_pathname === '/') {
+            IndexController.saveLocationData(vo);
         }
         else if (window_location_pathname.startsWith('/l/')) {
             const jsonMadmenVolume = localStorage.getItem(stateNameIndex);
@@ -62,9 +61,10 @@ export class IndexController {
                 vo.set(JSON.parse(jsonMadmenVolume));
             }
             vo.set_page(Number(window_location_pathname.replace('/l/', '')));
+            if (! jsonMadmenVolume) {
+                IndexController.saveLocationData(vo);
+            }
         }
-
-        IndexController.saveLocationData(vo);
 
         this.render(vo);
     }
@@ -83,7 +83,7 @@ export class IndexController {
             vo.set_limit(globalState.limit);
         }
 
-        globalRoot.rootRoot.render(
+        globalRoot.root.render(
             <Provider store={store}>
                 <Title/>
                 <fieldset>

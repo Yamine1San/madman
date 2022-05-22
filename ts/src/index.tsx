@@ -9,7 +9,7 @@ import {globalRoot} from "./config/appConfig";
 const rootElement = document.getElementById('root');
 if (! rootElement) throw new Error('Failed to find the root element');
 
-globalRoot.rootRoot = ReactDOM.createRoot(rootElement);
+globalRoot.root = ReactDOM.createRoot(rootElement);
 export const window_location_pathname = window.location.pathname;
 
 //

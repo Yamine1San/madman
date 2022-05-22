@@ -57,7 +57,7 @@ export class DetailController {
      * @param page
      */
     static render = (r: MadmenCols, history_back: number, page: number) => {
-        globalRoot.rootRoot.render(
+        globalRoot.root.render(
             <Provider store={store}>
                 <Title/>
                 <Detail r={r} history_back={history_back} page={page}/>
