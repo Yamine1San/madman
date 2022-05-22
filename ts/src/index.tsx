@@ -4,10 +4,13 @@ import "./css/site.css";
 import reportWebVitals from "./reportWebVitals";
 import {DetailController} from "./controller/DetailController";
 import {IndexController} from "./controller/IndexController";
-import {globalState} from "./config/appConfig";
+import {globalRoot} from "./config/appConfig";
 
-// @ts-ignore
-globalState.rootRoot = ReactDOM.createRoot(document.getElementById('root'));
+const rootElement = document.getElementById('root');
+if (! rootElement) throw new Error('Failed to find the root element');
+
+globalRoot.rootRoot = ReactDOM.createRoot(rootElement);
+export const window_location_pathname = window.location.pathname;
 
 //
 // 戻る進む処理のためのpopstate登録
@@ -28,10 +31,10 @@ DetailController.addEventListener();
 //
 // ルーティング URIに応じてコントローラのアクション呼び出し
 //
-if ('/' === window.location.pathname || window.location.pathname.startsWith('/l/')) {
+if ('/' === window_location_pathname || window_location_pathname.startsWith('/l/')) {
     IndexController.default();
 }
-else if (window.location.pathname.startsWith('/d/')) {
+else if (window_location_pathname.startsWith('/d/')) {
     DetailController.default();
 }
 else {

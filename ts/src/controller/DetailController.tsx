@@ -3,10 +3,11 @@
 import React from "react";
 import {Provider} from "react-redux";
 import {store} from "../redux/store";
-import {globalState, stateNameCard} from "../config/appConfig";
+import {globalRoot, stateNameCard} from "../config/appConfig";
 import {MadmenCols, MadmenService} from "../service/MadmenService";
 import Detail from "../component/Detail";
 import Title from "../component/Title";
+import {window_location_pathname} from "../index";
 
 export class DetailController {
 
@@ -32,7 +33,7 @@ export class DetailController {
      */
     static default = () => {
         const madmen = new MadmenService();
-        const id = window.location.pathname.replace('/d/', '');
+        const id = window_location_pathname.replace('/d/', '');
         madmen.find_by_id(id).then((r: MadmenCols | false) => {
             if (! r) {
                 window.location.href = '/';
@@ -56,8 +57,7 @@ export class DetailController {
      * @param page
      */
     static render = (r: MadmenCols, history_back: number, page: number) => {
-        // @ts-ignore
-        globalState.rootRoot.render(
+        globalRoot.rootRoot.render(
             <Provider store={store}>
                 <Title/>
                 <Detail r={r} history_back={history_back} page={page}/>

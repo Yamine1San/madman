@@ -36,13 +36,12 @@ export const globalState = {
 };
 
 type globalRootType = {
-    rootRoot: Root | undefined,
-    rootMadmenList: Root | undefined,
+    rootRoot: Root,
 };
 
 export const globalRoot: globalRootType = {
+    // @ts-ignore
     rootRoot: undefined,
-    rootMadmenList: undefined,
 };
 
 export const stateNameIndex: string = 'Index';

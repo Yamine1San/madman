@@ -6,8 +6,9 @@ import {store} from "../redux/store";
 import {MadmenVolume} from "../service/MadmenService";
 import AddForm from "../component/AddForm";
 import List from "../component/List";
-import {globalState, sortKeyDefaultValue, sortUdDefaultValue, stateNameIndex} from "../config/appConfig";
+import {globalRoot, globalState, sortKeyDefaultValue, sortUdDefaultValue, stateNameIndex} from "../config/appConfig";
 import Title from "../component/Title";
+import {window_location_pathname} from "../index";
 
 export class IndexController {
 
@@ -53,14 +54,14 @@ export class IndexController {
         vo.set_sort_key(sortKeyDefaultValue);
         vo.set_sort_ud(sortUdDefaultValue);
 
-        if (window.location.pathname === '/') {
+        if (window_location_pathname === '/') {
         }
-        else if (window.location.pathname.startsWith('/l/')) {
+        else if (window_location_pathname.startsWith('/l/')) {
             const jsonMadmenVolume = localStorage.getItem(stateNameIndex);
             if (jsonMadmenVolume) {
                 vo.set(JSON.parse(jsonMadmenVolume));
             }
-            vo.set_page(Number(window.location.pathname.replace('/l/', '')));
+            vo.set_page(Number(window_location_pathname.replace('/l/', '')));
         }
 
         IndexController.saveLocationData(vo);
@@ -82,8 +83,7 @@ export class IndexController {
             vo.set_limit(globalState.limit);
         }
 
-        // @ts-ignore
-        globalState.rootRoot.render(
+        globalRoot.rootRoot.render(
             <Provider store={store}>
                 <Title/>
                 <fieldset>

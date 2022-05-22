@@ -6,6 +6,7 @@ import {appKbDefaultValue, appKbMap, globalState} from "../config/appConfig";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {toHalfWidth} from "../lib/functions";
 import {setLastPage, setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
+import {IndexController} from "../controller/IndexController";
 
 /**
  *
@@ -46,23 +47,13 @@ const AddForm = () => {
                 setAppkb('1');
                 setScreenName('');
 
-                // 一覧のトップページへ
-                if ('/' !== window.location.pathname) {
-                    window.history.pushState({}, '', '/');
-                }
-
-                // 登録日時順
-                const sort_key = '2';
-                // 降順
-                const sort_ud = 'desc';
-
                 // データの更新
                 const vo = new MadmenVolume();
                 vo.data_reload = 1;
                 vo.set_page(1);
                 vo.set_limit(globalState.limit);
-                vo.set_sort_key(sort_key);
-                vo.set_sort_ud(sort_ud);
+                vo.set_sort_key('2'); // 登録日時順
+                vo.set_sort_ud('desc');
                 const madmen = new MadmenService();
                 // 一覧更新
                 madmen.paging(vo).then(() => {
@@ -71,6 +62,7 @@ const AddForm = () => {
                     dispatch(setSortKey(vo.sort_key()));
                     dispatch(setSortUd(vo.sort_ud()));
                     dispatch(setLimit(vo.limit()));
+                    IndexController.saveLocationData(vo);
                 });
             }
         });
