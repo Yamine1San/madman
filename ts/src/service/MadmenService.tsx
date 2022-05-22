@@ -32,7 +32,14 @@ export class MadmenService extends AppService {
 
         // データを全件取得する
         if (0 === MadmenService.dataList.length || 1 === vo.data_reload) {
-            const madmenDocs = await getDocs(query(collection(db, this.table)));
+            const madmenCollection = collection(db, this.table);
+            const madmenQuery = query(madmenCollection);
+
+            // await getDocsを実行するとなぜかpage_noが1になるので対応
+            const page_no = vo.page();
+            const madmenDocs = await getDocs(madmenQuery);
+            vo.set_page(page_no);
+
             MadmenService.dataList = [];
             madmenDocs.forEach((cols) => {
                 const r = new MadmenCols({...cols.data(), id: cols.id});
@@ -299,6 +306,11 @@ export class MadmenService extends AppService {
 
         if (! vo.none_update_message) {
             this.addSuccess(`${vo.r.user_name}のデータを更新しました。`);
+        }
+
+        if (newData.hasOwnProperty('account_upd_date')) {
+            const date = new Date();
+            newData.account_upd_date['seconds'] = Math.floor(date.getTime()/1000);
         }
 
         this.updateDataListRow(vo.r.id, newData);

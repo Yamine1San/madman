@@ -102,6 +102,6 @@ const AddForm = () => {
             <input type="submit" value="登録する"/>
         </form>
     );
-}
+};
 
 export default AddForm;

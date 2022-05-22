@@ -12,9 +12,9 @@ type listState = {
 const initialState: listState = {
     page: 0,
     last_page: 0,
-    sort_key: sortKeyDefaultValue,
-    sort_ud: sortUdDefaultValue,
-    limit: limitDefaultValue,
+    sort_key: '',
+    sort_ud: '',
+    limit: 0,
 };
 
 const listSlice = createSlice({

@@ -74,7 +74,6 @@ function Card(Props: any) {
     useEffect(() => {
         const date = new Date();
         if (r.account_upd_date.seconds < Math.floor(date.getTime() / 1000-updateAccountDataInterval)) {
-            console.log(r.screen_name+'は古いので更新します');
             const vo = new MadmenVolume();
             vo.r = r;
             const madmen = new MadmenService();

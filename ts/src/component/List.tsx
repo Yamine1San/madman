@@ -1,13 +1,13 @@
 /* eslint-disable import/first */
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/store";
 import {nextPage, previousPage, setLastPage, setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
 import {MadmenCols, MadmenService, MadmenVolume} from "../service/MadmenService";
 import Card from './Card';
 import {IndexController} from "../controller/IndexController";
-import {globalState, sortOrderMap} from "../config/appConfig";
+import {globalState, sortOrderMap, stateNameIndex} from "../config/appConfig";
 
 function List(Props: any) {
     const dispatch = useDispatch();
@@ -36,13 +36,47 @@ function List(Props: any) {
     if (0 < page) {
         vo.set_page(page);
     }
-    vo.set_limit(limit);
-    vo.set_sort_key(sort_key);
-    vo.set_sort_ud(sort_ud);
+    if (0 < limit) {
+        vo.set_limit(limit);
+    }
+    if (sort_key) {
+        vo.set_sort_key(sort_key);
+    }
+    if (sort_ud) {
+        vo.set_sort_ud(sort_ud);
+    }
     const madmen = new MadmenService();
     madmen.paging(vo).then(() => {
         changeState(vo);
     });
+
+    useEffect(() => {
+        window.addEventListener('popstate', (event) => {
+            if (! event.state) {
+                return;
+            }
+
+            if (! event.state.hasOwnProperty('stateName')) {
+                return;
+            }
+
+            if (stateNameIndex !== event.state.stateName) {
+                return;
+            }
+
+            const vo = new MadmenVolume(event.state);
+
+            if (null === document.getElementById('madman_list')) {
+                IndexController.render(vo);
+            }
+
+            dispatch(setPage(vo.page()));
+            dispatch(setLastPage(vo.last_page()));
+            dispatch(setSortKey(vo.sort_key()));
+            dispatch(setSortUd(vo.sort_ud()));
+            dispatch(setLimit(vo.limit()));
+        });
+    }, []);
 
     const handlePreviousPage = () => {
         dispatch(previousPage());

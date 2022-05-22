@@ -5,7 +5,7 @@ import {Provider} from "react-redux";
 import {store} from "../redux/store";
 import {MadmenVolume} from "../service/MadmenService";
 import AddForm from "../component/AddForm";
-import ListWrapper from "../component/ListWrapper";
+import List from "../component/List";
 import {globalState, sortKeyDefaultValue, sortUdDefaultValue, stateNameIndex} from "../config/appConfig";
 import Title from "../component/Title";
 
@@ -93,7 +93,7 @@ export class IndexController {
                 <fieldset>
                     <legend>一覧</legend>
                     <div id="madman_list">
-                        <ListWrapper vo={vo}/>
+                        <List vo={vo}/>
                     </div>
                 </fieldset>
             </Provider>
