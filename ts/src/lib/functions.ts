@@ -23,21 +23,6 @@ export function number_format(num: any): string {
 }
 
 /**
- * 文字列の両端の半角空白、全角空白、タブを削除する
- *
- * @param str
- * @returns string
- */
-export function mb_trim(str: any): string {
-    if ('string' !== typeof str || '' === str) {
-        return str;
-    }
-    const whitespace = '[\\s\\0\\x0b\\p{Zs}\\p{Zl}\\p{Zp}]';
-    const regexp = new RegExp(`(^${whitespace}+|${whitespace}+$)`, 'g');
-    return str.replace(regexp, '');
-}
-
-/**
  * 全角から半角への変換関数
  *
  * @see https://webllica.com/change-double-byte-to-half-width/

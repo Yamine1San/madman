@@ -15,7 +15,6 @@ import {AppService, AppVolume} from "./AppService";
 import {TwitterService} from "./TwitterService";
 import {mdApiKey, urlGetIpAddress} from "../config/appConfig";
 import {validate} from "validate.js";
-import {mb_trim} from "../lib/functions";
 
 /**
  *
@@ -95,7 +94,7 @@ export class MadmenService extends AppService {
     async add(vo: MadmenVolume) {
         vo.result = false;
 
-        vo.r.screen_name = mb_trim(vo.r.screen_name);
+        vo.r.screen_name = vo.r.screen_name.trim();
 
         const constraints1 = {
             app_kb: {
@@ -135,9 +134,10 @@ export class MadmenService extends AppService {
 
         if (1 === vo.r.app_kb) {
             const twitter = new TwitterService();
-            if (! await twitter.getUserInfo(vo)) {
-                this.addError(twitter.getErrorMessage());
-                this.addSuccess(twitter.getSuccessMessage());
+            const getUserInfoResult = await twitter.getUserInfo(vo);
+            this.addError(twitter.getErrorMessage());
+            this.addSuccess(twitter.getSuccessMessage());
+            if (! getUserInfoResult) {
                 return;
             }
         }
@@ -325,7 +325,7 @@ export class MadmenService extends AppService {
     async addComment(vo: MadmenVolume) {
         vo.result = false;
 
-        vo.comment = mb_trim(vo.comment);
+        vo.comment = vo.comment.trim();
 
         const constraints1 = {
             id: {
