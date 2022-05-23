@@ -22,6 +22,10 @@ export class IndexController {
                 return;
             }
 
+            if (! event.state.hasOwnProperty('stateName')) {
+                return;
+            }
+
             if (stateNameIndex !== event.state.stateName) {
                 return;
             }
@@ -53,7 +57,9 @@ export class IndexController {
         vo.set_sort_ud(sortUdDefaultValue);
 
         if (window_location_pathname === '/') {
-            IndexController.saveLocationData(vo);
+            vo.set('stateName', stateNameIndex);
+            window.history.replaceState(vo, '', '/l/'+vo.page());
+            localStorage.setItem(stateNameIndex, JSON.stringify(vo));
         }
         else if (window_location_pathname.startsWith('/l/')) {
             const jsonMadmenVolume = localStorage.getItem(stateNameIndex);
@@ -73,14 +79,10 @@ export class IndexController {
      *
      * @param vo
      */
-    static render = (vo?: MadmenVolume) => {
+    static render = (vo: MadmenVolume) => {
 
-        if (undefined === vo) {
-            vo = new MadmenVolume();
-            vo.set_page(1);
-            vo.set_sort_key(sortKeyDefaultValue);
-            vo.set_sort_ud(sortUdDefaultValue);
-            vo.set_limit(globalState.limit);
+        if (document.getElementById('madman_list')) {
+            return;
         }
 
         globalRoot.root.render(
@@ -93,7 +95,11 @@ export class IndexController {
                 <fieldset>
                     <legend>一覧</legend>
                     <div id="madman_list">
-                        <List vo={vo}/>
+                        <List page={vo.page()}
+                              sort_key={vo.sort_key()}
+                              sort_ud={vo.sort_ud()}
+                              limit={vo.limit()}
+                        />
                     </div>
                 </fieldset>
             </Provider>

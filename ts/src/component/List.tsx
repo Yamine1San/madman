@@ -12,7 +12,6 @@ import {globalState, sortOrderMap, stateNameIndex} from "../config/appConfig";
 function List(Props: any) {
     const dispatch = useDispatch();
 
-    const vo: MadmenVolume = Props.vo;
     const page = useSelector((state: RootState) => state.list.page);
     const last_page = useSelector((state: RootState) => state.list.last_page);
     const sort_key = useSelector((state: RootState) => state.list.sort_key);
@@ -33,50 +32,49 @@ function List(Props: any) {
         }
     };
 
-    if (0 < page) {
-        vo.set_page(page);
-    }
-    if (0 < limit) {
-        vo.set_limit(limit);
-    }
-    if (sort_key) {
-        vo.set_sort_key(sort_key);
-    }
-    if (sort_ud) {
-        vo.set_sort_ud(sort_ud);
-    }
-    const madmen = new MadmenService();
-    madmen.paging(vo).then(() => {
-        changeState(vo);
-    });
+    const vo = new MadmenVolume();
+    vo.set_page((0 < page) ? page : Props.page);
+    vo.set_limit((0 < limit) ? limit : Props.limit);
+    vo.set_sort_key((sort_key) ? sort_key : Props.sort_key);
+    vo.set_sort_ud((sort_ud) ? sort_ud : Props.sort_ud);
 
     useEffect(() => {
-        if (! globalState.list_add_popstate) {
-            globalState.list_add_popstate = true;
-            window.addEventListener('popstate', (event) => {
-                if (! event.state) {
-                    return;
-                }
+        const vo = new MadmenVolume();
+        vo.set_page((0 < page) ? page : Props.page);
+        vo.set_limit((0 < limit) ? limit : Props.limit);
+        vo.set_sort_key((sort_key) ? sort_key : Props.sort_key);
+        vo.set_sort_ud((sort_ud) ? sort_ud : Props.sort_ud);
+        const madmen = new MadmenService();
+        madmen.paging(vo).then(() => {
+            changeState(vo);
+        });
+    });
 
-                if (! event.state.hasOwnProperty('stateName')) {
-                    return;
-                }
+    if (! globalState.list_add_popstate) {
+        globalState.list_add_popstate = true;
+        window.addEventListener('popstate', (event) => {
+            if (! event.state) {
+                return;
+            }
 
-                if (stateNameIndex !== event.state.stateName) {
-                    return;
-                }
+            if (! event.state.hasOwnProperty('stateName')) {
+                return;
+            }
 
-                const vo = new MadmenVolume(event.state);
-                IndexController.render(vo);
+            if (stateNameIndex !== event.state.stateName) {
+                return;
+            }
 
-                dispatch(setPage(vo.page()));
-                dispatch(setLastPage(vo.last_page()));
-                dispatch(setSortKey(vo.sort_key()));
-                dispatch(setSortUd(vo.sort_ud()));
-                dispatch(setLimit(vo.limit()));
-            });
-        }
-    }, []);
+            const vo = new MadmenVolume(event.state);
+            IndexController.render(vo);
+
+            dispatch(setPage(vo.page()));
+            dispatch(setLastPage(vo.last_page()));
+            dispatch(setSortKey(vo.sort_key()));
+            dispatch(setSortUd(vo.sort_ud()));
+            dispatch(setLimit(vo.limit()));
+        });
+    }
 
     const handlePreviousPage = () => {
         dispatch(previousPage());

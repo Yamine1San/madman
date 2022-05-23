@@ -1,8 +1,7 @@
 /* eslint-disable import/first */
 
 import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../redux/store";
+import {useDispatch} from "react-redux";
 import {setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";

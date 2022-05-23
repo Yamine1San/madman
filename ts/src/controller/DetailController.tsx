@@ -20,6 +20,10 @@ export class DetailController {
                 return;
             }
 
+            if (! event.state.hasOwnProperty('stateName')) {
+                return;
+            }
+
             if (stateNameCard !== event.state.stateName) {
                 return;
             }

@@ -1,5 +1,4 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {limitDefaultValue, sortKeyDefaultValue, sortUdDefaultValue} from "../config/appConfig";
 
 type listState = {
     page: number,
@@ -29,9 +28,6 @@ const listSlice = createSlice({
         },
         setLastPage: (state, action: PayloadAction<number>) => {
             state.last_page = action.payload;
-            if (state.last_page < state.page) {
-                state.page = state.last_page;
-            }
         },
         setSortKey: (state, action: PayloadAction<string>) => {
             state.sort_key = action.payload;
