@@ -19,6 +19,8 @@ function List(Props: any) {
     const limit = useSelector((state: RootState) => state.list.limit);
     const [madmenList, setMadmenList] = useState([]);
     const [total, setTotal] = useState(0);
+    const [page_rowno_start, setPageRowNoStart] = useState(0);
+    const [page_rowno_end, setPageRowNoEnd] = useState(0);
 
     const changeState = (vo: MadmenVolume) => {
         dispatch(setPage(vo.page()));
@@ -28,6 +30,8 @@ function List(Props: any) {
         dispatch(setLimit(vo.limit()));
         globalState.limit = vo.limit();
         setTotal(vo.total());
+        setPageRowNoStart(vo.page_rowno_start());
+        setPageRowNoEnd(vo.page_rowno_end());
         if (JSON.stringify(madmenList) !== JSON.stringify(vo.rs)) {
             // @ts-ignore
             setMadmenList(vo.rs);
@@ -114,7 +118,7 @@ function List(Props: any) {
 
     const pager_div = (
         <React.StrictMode>
-            登録件数{total}人 {vo.page()}ページ目 {vo.page_rowno_start()}～{vo.page_rowno_end()}件表示中<br/>
+            登録件数{total}人 {page}ページ目 {page_rowno_start}～{page_rowno_end}件表示中<br/>
             並び順：
             <select value={sort_key} onChange={handleSortKeyChange}>
                 {(() => Object.entries(vo.sort_key_allows()).map(([key, obj]: any) =>
