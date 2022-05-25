@@ -1,34 +1,29 @@
 /* eslint-disable import/first */
 
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../redux/store";
-import {nextPage, previousPage, setLastPage, setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
+import {useNavigate, useParams} from "react-router-dom";
 import {MadmenCols, MadmenService, MadmenVolume} from "../service/MadmenService";
 import Card from './Card';
-import {IndexController} from "../controller/IndexController";
-import {globalState, sortOrderMap, stateNameIndex} from "../config/appConfig";
+import {limitDefaultValue, sortKeyDefaultValue, sortOrderMap, sortUdDefaultValue} from "../config/appConfig";
 
-function List(Props: any) {
-    const dispatch = useDispatch();
+export default function List() {
+    const params = useParams();
+    const navigate = useNavigate();
 
-    const page = useSelector((state: RootState) => state.list.page);
-    const last_page = useSelector((state: RootState) => state.list.last_page);
-    const sort_key = useSelector((state: RootState) => state.list.sort_key);
-    const sort_ud = useSelector((state: RootState) => state.list.sort_ud);
-    const limit = useSelector((state: RootState) => state.list.limit);
-    const [madmenList, setMadmenList] = useState([]);
+    const [page, setPage] = useState(0);
+    const [last_page, setLastPage] = useState(0);
+    const [sort_key, setSortKey] = useState('');
+    const [sort_ud, setSortUd] = useState('');
     const [total, setTotal] = useState(0);
     const [page_rowno_start, setPageRowNoStart] = useState(0);
     const [page_rowno_end, setPageRowNoEnd] = useState(0);
+    const [madmenList, setMadmenList] = useState([]);
 
     const changeState = (vo: MadmenVolume) => {
-        dispatch(setPage(vo.page()));
-        dispatch(setLastPage(vo.last_page()));
-        dispatch(setSortKey(vo.sort_key()));
-        dispatch(setSortUd(vo.sort_ud()));
-        dispatch(setLimit(vo.limit()));
-        globalState.limit = vo.limit();
+        setPage(vo.page());
+        setLastPage(vo.last_page());
+        setSortKey(vo.sort_key());
+        setSortUd(vo.sort_ud());
         setTotal(vo.total());
         setPageRowNoStart(vo.page_rowno_start());
         setPageRowNoEnd(vo.page_rowno_end());
@@ -39,81 +34,35 @@ function List(Props: any) {
     };
 
     const vo = new MadmenVolume();
-    vo.set_page((0 < page) ? page : Props.page);
-    vo.set_limit((0 < limit) ? limit : Props.limit);
-    vo.set_sort_key((sort_key) ? sort_key : Props.sort_key);
-    vo.set_sort_ud((sort_ud) ? sort_ud : Props.sort_ud);
+    vo.set_page(params.page_no);
+    vo.set_sort_key(params.sort_key ? params.sort_key : sortKeyDefaultValue);
+    vo.set_sort_ud(params.sort_ud ? params.sort_ud : sortUdDefaultValue);
+    vo.set_limit(params.limit ? params.limit : limitDefaultValue);
 
-    useEffect(() => {
-        const vo = new MadmenVolume();
-        vo.set_page((0 < page) ? page : Props.page);
-        vo.set_limit((0 < limit) ? limit : Props.limit);
-        vo.set_sort_key((sort_key) ? sort_key : Props.sort_key);
-        vo.set_sort_ud((sort_ud) ? sort_ud : Props.sort_ud);
-        const madmen = new MadmenService();
-        madmen.paging(vo).then(() => {
-            changeState(vo);
-        });
-    });
-
-    if (! globalState.list_add_popstate) {
-        globalState.list_add_popstate = true;
-        window.addEventListener('popstate', (event) => {
-            if (! event.state) {
-                return;
-            }
-
-            if (! event.state.hasOwnProperty('stateName')) {
-                return;
-            }
-
-            if (stateNameIndex !== event.state.stateName) {
-                return;
-            }
-
-            const vo = new MadmenVolume(event.state);
-            IndexController.render(vo);
-
-            dispatch(setPage(vo.page()));
-            dispatch(setLastPage(vo.last_page()));
-            dispatch(setSortKey(vo.sort_key()));
-            dispatch(setSortUd(vo.sort_ud()));
-            dispatch(setLimit(vo.limit()));
-        });
-    }
-
+    // 前ページ
     const handlePreviousPage = () => {
-        dispatch(previousPage());
-        // 履歴保存
-        vo.set_page(page-1);
-        IndexController.saveLocationData(vo);
+        vo.set_page(vo.page()-1);
+        navigate(`/l/${vo.page()}/${vo.sort_key()}/${vo.sort_ud()}/${vo.limit()}`);
     };
 
+    // 次ページ
     const handleNextPage = () => {
-        dispatch(nextPage());
-        // 履歴保存
-        vo.set_page(page+1);
-        IndexController.saveLocationData(vo);
+        vo.set_page(vo.page()+1);
+        navigate(`/l/${vo.page()}/${vo.sort_key()}/${vo.sort_ud()}/${vo.limit()}`);
     };
 
     // 並び順 項目変更
     const handleSortKeyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        dispatch(setPage(1));
-        dispatch(setSortKey(e.target.value));
-        // 履歴保存
         vo.set_page(1);
         vo.set_sort_key(e.target.value);
-        IndexController.saveLocationData(vo);
+        navigate(`/l/${vo.page()}/${vo.sort_key()}/${vo.sort_ud()}/${vo.limit()}`);
     };
 
     // 並び順 昇順降順変更
     const handleSortOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        dispatch(setPage(1));
-        dispatch(setSortUd(e.target.value));
-        // 履歴保存
         vo.set_page(1);
         vo.set_sort_ud(e.target.value);
-        IndexController.saveLocationData(vo);
+        navigate(`/l/${vo.page()}/${vo.sort_key()}/${vo.sort_ud()}/${vo.limit()}`);
     };
 
     const pager_div = (
@@ -144,6 +93,18 @@ function List(Props: any) {
         </React.StrictMode>
     );
 
+    useEffect(() => {
+        const vo = new MadmenVolume();
+        vo.set_page(params.page_no);
+        vo.set_sort_key(params.sort_key ? params.sort_key : sortKeyDefaultValue);
+        vo.set_sort_ud(params.sort_ud ? params.sort_ud : sortUdDefaultValue);
+        vo.set_limit(params.limit ? params.limit : limitDefaultValue);
+        const madmen = new MadmenService();
+        madmen.paging(vo).then(() => {
+            changeState(vo);
+        });
+    });
+
     return (
         <React.StrictMode>
             {madmenList.length ? pager_div : null}
@@ -157,5 +118,3 @@ function List(Props: any) {
         </React.StrictMode>
     );
 }
-
-export default List;

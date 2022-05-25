@@ -32,27 +32,5 @@ export const sortKeyDefaultValue = '1';
 export const sortUdDefaultValue = 'desc';
 export const limitDefaultValue = 5;
 
-export interface GlobalState {
-    limit: number;
-    list_add_popstate: boolean;
-}
-
-export const globalState: GlobalState = {
-    limit: limitDefaultValue,
-    list_add_popstate: false,
-};
-
-export interface GlobalRoot {
-    root: Root;
-}
-
-export const globalRoot: GlobalRoot = {
-    // @ts-ignore
-    root: undefined,
-};
-
-export const stateNameIndex: string = 'Index';
-export const stateNameCard: string = 'Card';
-
 // アカウント名や画像URLの更新間隔は6時間
 export const updateAccountDataInterval = 60 * 60 * 6;

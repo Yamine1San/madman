@@ -1,22 +1,25 @@
 /* eslint-disable import/first */
 
 import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {RootState} from "../redux/store";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {number_format, YmdHis} from "../lib/functions";
-import {stateNameCard, updateAccountDataInterval} from "../config/appConfig";
-import {DetailController} from "../controller/DetailController";
+import {
+    limitDefaultValue,
+    sortKeyDefaultValue,
+    sortUdDefaultValue,
+    updateAccountDataInterval
+} from "../config/appConfig";
+import {createSearchParams, useNavigate, useParams} from "react-router-dom";
 
 function Card(Props: any) {
-
-    const page = useSelector((state: RootState) => state.list.page);
+    const params = useParams();
+    const navigate = useNavigate();
 
     const [r, setR] = useState(Props.r);
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [cnt_agree, setAgreeCount] = useState(r.cnt_agree);
-    const [cnt_disagree, setDisAgreeCount] = useState(r.cnt_disagree);
+    const [cnt_agree, setCntAgree] = useState(r.cnt_agree);
+    const [cnt_disagree, setCntDisAgree] = useState(r.cnt_disagree);
 
     const doVote = (id: any, app_kb: any, app_id: any, vote_kb: number) => {
         setSuccessMessage('');
@@ -34,10 +37,10 @@ function Card(Props: any) {
                 return;
             }
             if (1 === vote_kb) {
-                setAgreeCount(newData.cnt_agree);
+                setCntAgree(newData.cnt_agree);
             }
             else {
-                setDisAgreeCount(newData.cnt_disagree);
+                setCntDisAgree(newData.cnt_disagree);
             }
         });
     };
@@ -61,14 +64,20 @@ function Card(Props: any) {
     };
 
     const handleDetailButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        localStorage.setItem(stateNameCard+r.id, JSON.stringify({'page': page}));
-        window.history.pushState({
-            'stateName': stateNameCard,
-            'r': r,
-            'history_back': 1,
-            'page': page
-        }, '', '/d/'+r.id);
-        DetailController.render(r, 1, page);
+        const vo = new MadmenVolume();
+        vo.set_page(params.page_no);
+        vo.set_sort_key(params.sort_key ? params.sort_key : sortKeyDefaultValue);
+        vo.set_sort_ud(params.sort_ud ? params.sort_ud : sortUdDefaultValue);
+        vo.set_limit(params.limit ? params.limit : limitDefaultValue);
+
+        const searchParams = createSearchParams({
+            page: vo.page().toString(),
+            sort_key: vo.sort_key(),
+            sort_ud: vo.sort_ud(),
+            limit: vo.limit().toString(),
+        });
+
+        navigate(`/d/${r.id}/?${searchParams.toString()}`);
     };
 
     useEffect(() => {
@@ -114,6 +123,5 @@ function Card(Props: any) {
         </React.StrictMode>
     );
 }
-
 
 export default Card;

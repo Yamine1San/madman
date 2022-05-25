@@ -79,12 +79,22 @@ export class MadmenService extends AppService {
         MadmenService.dataListSortOrder = vo.sort_ud();
     }
 
-    async find_by_id(id: string) {
-        const madmenDoc = await getDoc(doc(db, this.table, id));
-        if (! madmenDoc.exists()) {
-            return false;
+    async find_by_id(id: string|undefined):Promise<MadmenCols|undefined> {
+        if (0 === MadmenService.dataList.length) {
+            const vo = new MadmenVolume();
+            vo.set_limit(1);
+            await this.paging(vo);
         }
-        return new MadmenCols({...madmenDoc.data(), id: madmenDoc.id});
+        let r:MadmenCols|undefined;
+        for (const i of Object.keys(MadmenService.dataList)) {
+            // @ts-ignore
+            if (id === MadmenService.dataList[i].id) {
+                // @ts-ignore
+                r = MadmenService.dataList[i];
+                break;
+            }
+        }
+        return r;
     }
 
     /**

@@ -1,18 +1,17 @@
 /* eslint-disable import/first */
 
 import React, {useState} from "react";
-import {useDispatch} from "react-redux";
-import {appKbDefaultValue, appKbMap, globalState} from "../config/appConfig";
+import {appKbDefaultValue, appKbMap, limitDefaultValue} from "../config/appConfig";
 import {MadmenService, MadmenVolume} from "../service/MadmenService";
 import {toHalfWidth} from "../lib/functions";
-import {setLastPage, setLimit, setPage, setSortKey, setSortUd} from "../redux/listSlice";
-import {IndexController} from "../controller/IndexController";
+import {useNavigate, useParams} from "react-router-dom";
 
 /**
  *
  */
 const AddForm = () => {
-    const dispatch = useDispatch();
+    const params = useParams();
+    const navigate = useNavigate();
 
     const [succcessMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -32,6 +31,7 @@ const AddForm = () => {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
         const vo = new MadmenVolume();
         // @ts-ignore
         vo.r.app_kb = (app_kb) ? Number(app_kb) : '';
@@ -51,22 +51,17 @@ const AddForm = () => {
                 const vo = new MadmenVolume();
                 vo.data_reload = 1;
                 vo.set_page(1);
-                vo.set_limit(globalState.limit);
+                vo.set_limit(params.limit ? params.limit : limitDefaultValue);
                 vo.set_sort_key('2'); // 登録日時順
                 vo.set_sort_ud('desc');
                 const madmen = new MadmenService();
                 // 一覧更新
                 madmen.paging(vo).then(() => {
-                    dispatch(setPage(vo.page()));
-                    dispatch(setLastPage(vo.last_page()));
-                    dispatch(setSortKey(vo.sort_key()));
-                    dispatch(setSortUd(vo.sort_ud()));
-                    dispatch(setLimit(vo.limit()));
-                    IndexController.saveLocationData(vo);
+                    const vo = new MadmenVolume();
+                    navigate(`/l/${vo.page()}/${vo.sort_key()}/${vo.sort_ud()}/${vo.limit()}`);
                 });
             }
         });
-        e.preventDefault();
     };
 
     return (
