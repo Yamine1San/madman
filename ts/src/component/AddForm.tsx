@@ -57,7 +57,6 @@ const AddForm = () => {
                 const madmen = new MadmenService();
                 // 一覧更新
                 madmen.paging(vo).then(() => {
-                    const vo = new MadmenVolume();
                     navigate(`/l/${vo.page()}/${vo.sort_key()}/${vo.sort_ud()}/${vo.limit()}`);
                 });
             }
