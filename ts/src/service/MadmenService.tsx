@@ -264,7 +264,7 @@ export class MadmenService extends AppService {
         }
         catch (e: any) {
             this.addError('Firebaseキチガイドキュメント登録処理でエラーが発生しました。');
-            this.addError('メッセージ:'+e.getMessage());
+            this.addError('メッセージ:'+e.message);
             return false;
         }
     }
@@ -403,7 +403,7 @@ export class MadmenService extends AppService {
             return newData;
         }
         catch (e: any) {
-            // this.addError(e.getMessage());
+            this.addError('メッセージ:'+e.message);
             console.log(e);
         }
 
@@ -462,13 +462,12 @@ export class MadmenService extends AppService {
             return false;
         }
 
-        // @ts-ignore
         const url: any = new URL(urlGetIpAddress);
-        // @ts-ignore
         url.searchParams.append('apikey', mdApiKey);
 
         let ipv4 = '';
-        await fetch(url, {
+
+        await fetch(url.toString(), {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -487,9 +486,10 @@ export class MadmenService extends AppService {
             }
             ipv4 = json.data.ipv4;
         })
-        .catch(e => {
+        .catch((e: Error) => {
             this.addError('IPアドレス取得APIでエラーが発生しました。');
             this.addError('メッセージ:'+e.message);
+            console.log(e);
         });
 
         if ('' === ipv4) {
@@ -559,7 +559,7 @@ export class MadmenService extends AppService {
             return newData;
         }
         catch (e: any) {
-            // this.addError(e.getMessage());
+            this.addError('メッセージ:'+e.message);
             console.log(e);
         }
 

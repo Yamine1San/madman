@@ -10,13 +10,11 @@ export class TwitterService extends AppService {
         try {
             let result = false;
 
-            // @ts-ignore
-            const url: any = new URL(urlGetTwitterUser);
-            // @ts-ignore
+            const url = new URL(urlGetTwitterUser);
             url.searchParams.append('apikey', mdApiKey);
             url.searchParams.append('screen_name', vo.r.screen_name);
 
-            await fetch(url, {
+            await fetch(url.toString(), {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
@@ -26,6 +24,7 @@ export class TwitterService extends AppService {
                 },
             })
             .then((res) => {
+                // console.log('TwitterService::getUserInfo res', res);
                 return res.json();
             })
             .then((json) => {
@@ -46,9 +45,10 @@ export class TwitterService extends AppService {
                 vo.r.image_url = json.data.profile_image_url_https.replace('_normal.', '.');
                 result = true;
             })
-            .catch(e => {
+            .catch((e: Error) => {
                 this.addError('Twitterアカウントのデータを取得出来ませんでした。');
                 this.addError('メッセージ:'+e.message);
+                console.log(e);
             });
 
             if (result) {
@@ -56,6 +56,7 @@ export class TwitterService extends AppService {
             }
         }
         catch (e: any) {
+            this.addError('メッセージ:'+e.message);
             console.log(e);
         }
         this.addError('Twitterアカウントのデータを取得出来ませんでした。');

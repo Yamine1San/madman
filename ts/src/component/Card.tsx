@@ -94,7 +94,7 @@ function Card(Props: any) {
                 }
             });
         }
-    }, []);
+    }, [r]);
 
     return (
         <React.StrictMode>

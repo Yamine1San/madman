@@ -9,6 +9,8 @@ import {limitDefaultValue, sortKeyDefaultValue, sortUdDefaultValue} from "../con
 function Detail(Props: any) {
     const params = useParams();
     const navigate = useNavigate();
+
+    // eslint-disable-next-line
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [succcessMessage, setSuccessMessage] = useState('');
@@ -22,7 +24,6 @@ function Detail(Props: any) {
     const [cnt_agree, setCntAgree] = useState(0);
     const [cnt_disagree, setCntDisAgree] = useState(0);
     const [comment, setComment] = useState('');
-    const [comments, setComments] = useState([]);
 
     const doVote = (id: any, app_kb: any, app_id: any, vote_kb: number) => {
         setSuccessMessage('');
@@ -81,7 +82,8 @@ function Detail(Props: any) {
                 return;
             }
             setComment('');
-            setComments(newData.comments);
+            r.comments = newData.comments;
+            setR(r);
         });
     };
 

@@ -5,9 +5,7 @@ import {Link} from "react-router-dom";
 
 const Title = () => {
     return (
-        <Link to={'/'}>
-            <h1><a>キチガイデータベース</a></h1>
-        </Link>
+        <Link to={'/'}><h1>キチガイデータベース</h1></Link>
     );
 };
 export default Title;

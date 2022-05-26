@@ -1,5 +1,3 @@
-import {Root} from "react-dom/client";
-
 export const mdApiKey: string =
     (undefined !== process.env.REACT_APP_VL_MD_API_KEY)
         ? process.env.REACT_APP_VL_MD_API_KEY
