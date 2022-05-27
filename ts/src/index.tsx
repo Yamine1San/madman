@@ -7,19 +7,21 @@ import "./css/site.css";
 import reportWebVitals from "./reportWebVitals";
 import {App, AppDetail} from "./component/App";
 import NotFound from "./component/NotFound";
+import ScrollToTop from "./component/ScrollToTop";
 
 const rootElement = document.getElementById('root');
 if (! rootElement) throw new Error('Failed to find the root element');
 
 ReactDOM.createRoot(rootElement).render(
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<App/>}/>
-            <Route path="l/:page_no/:sort_key/:sort_ud/:limit" element={<App/>}/>
-            <Route path="d/:id" element={<AppDetail/>}/>
-            <Route path="*" element={<NotFound/>}/>
-        </Routes>
-    </BrowserRouter>
+  <BrowserRouter>
+    <ScrollToTop/>
+    <Routes>
+      <Route path="/" element={<App/>}/>
+      <Route path="l/:page_no/:sort_key/:sort_ud/:limit" element={<App/>}/>
+      <Route path="d/:id" element={<AppDetail/>}/>
+      <Route path="*" element={<NotFound/>}/>
+    </Routes>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

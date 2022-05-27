@@ -1,17 +1,17 @@
 export const mdApiKey: string =
-    (undefined !== process.env.REACT_APP_VL_MD_API_KEY)
-        ? process.env.REACT_APP_VL_MD_API_KEY
-        : '';
+  (undefined !== process.env.REACT_APP_VL_MD_API_KEY)
+    ? process.env.REACT_APP_VL_MD_API_KEY
+    : '';
 
 export const urlGetTwitterUser: string =
-    (undefined !== process.env.REACT_APP_VL_URL_GET_TITTER_USER)
-        ? process.env.REACT_APP_VL_URL_GET_TITTER_USER
-        : 'https://yamine1san.ddns.net/madman/get/twitter/user';
+  (undefined !== process.env.REACT_APP_VL_URL_GET_TITTER_USER)
+    ? process.env.REACT_APP_VL_URL_GET_TITTER_USER
+    : 'https://yamine1san.ddns.net/madman/get/twitter/user';
 
 export const urlGetIpAddress: string =
-    (undefined !== process.env.REACT_APP_VL_URL_GET_IP_ADDRESS)
-        ? process.env.REACT_APP_VL_URL_GET_IP_ADDRESS
-        : 'https://yamine1san.ddns.net/madman/get/ip-address';
+  (undefined !== process.env.REACT_APP_VL_URL_GET_IP_ADDRESS)
+    ? process.env.REACT_APP_VL_URL_GET_IP_ADDRESS
+    : 'https://yamine1san.ddns.net/madman/get/ip-address';
 
 export const appKbDefaultValue = '1';
 export const appKbMap: Map<number | string, string> = new Map();
