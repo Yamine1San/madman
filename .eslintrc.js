@@ -1,0 +1,45 @@
+module.exports = { // jshint ignore:line
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname, // jshint ignore:line
+    sourceType: 'module',
+  },
+  plugins: ['@typescript-eslint/eslint-plugin'],
+  extends: ['plugin:@typescript-eslint/recommended'],
+  root: true,
+  env: {
+    node: true,
+    jest: true,
+  },
+  ignorePatterns: ['*.js'],
+  rules: {
+    '@typescript-eslint/interface-name-prefix': 0,
+    '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
+    '@typescript-eslint/ban-ts-comment': 0,
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/semi': [2, 'always'],
+    '@typescript-eslint/semi-spacing': [0, {after: 2, before: 0}],
+    '@typescript-eslint/semi-style': [0, 'last'],
+    '@typescript-eslint/no-extra-semi': 2,
+    '@typescript-eslint/no-unexpected-multiline': 0,
+    '@typescript-eslint/max-classes-per-file': 0,
+    '@typescript-eslint/no-console': 0,
+    '@typescript-eslint/no-string-literal': 0,
+    '@typescript-eslint/no-trailing-whitespace': 0,
+    '@typescript-eslint/no-unreachable': 0,
+    '@typescript-eslint/no-shadowed-variable': 0,
+    '@typescript-eslint/no-namespace': 0,
+    '@typescript-eslint/only-arrow-functions': 0,
+    '@typescript-eslint/comment-format': 0,
+    '@typescript-eslint/indent': [2, 2, {
+      MemberExpression: 0,
+      ignoredNodes: [
+        'ClassBody.body > PropertyDefinition[decorators.length > 0] > .key',
+      ],
+    }],
+    '@typescript-eslint/no-empty-function': [0, {allow: ['functions', 'arrowFunctions']}],
+    '@typescript-eslint/no-empty': [0, {allowEmptyCatch: true}],
+  },
+};

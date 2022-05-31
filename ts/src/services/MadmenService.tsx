@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import {db} from '../config/firebase';
 import {
   addDoc,
@@ -22,11 +21,11 @@ import {AppJson} from "../types/app.json";
  */
 export class MadmenService extends AppService {
 
-  table: string = 'madmen';
+  table = 'madmen';
 
   static dataList: MadmenCols[] = [];
-  static dataListSortOrder: string = '';
-  static dataListSortColumn: string = '';
+  static dataListSortOrder = '';
+  static dataListSortColumn = '';
 
   async paging(vo: MadmenVolume) {
 
@@ -80,13 +79,13 @@ export class MadmenService extends AppService {
     MadmenService.dataListSortOrder = vo.sort_ud();
   }
 
-  async find_by_id(id: string | undefined): Promise<MadmenCols | undefined> {
+  async find_by_id(id: string|undefined): Promise<MadmenCols|undefined> {
     if (0 === MadmenService.dataList.length) {
       const vo = new MadmenVolume();
       vo.set_limit(1);
       await this.paging(vo);
     }
-    let r: MadmenCols | undefined;
+    let r: MadmenCols|undefined;
     for (const i of Object.keys(MadmenService.dataList)) {
       // @ts-ignore
       if (id === MadmenService.dataList[i].id) {
@@ -139,15 +138,15 @@ export class MadmenService extends AppService {
 
     const errors1 = validate(vo.r, constraints1);
     if (undefined !== errors1) {
-      this.addError(errors1);
+      this.addErrorMessage(errors1);
       return;
     }
 
     if (1 === vo.r.app_kb) {
       const twitter = new TwitterService();
       const getUserInfoResult = await twitter.getUserInfo(vo);
-      this.addError(twitter.getErrorMessage());
-      this.addSuccess(twitter.getSuccessMessage());
+      this.addErrorMessage(twitter.getErrorMessage());
+      this.addMessage(twitter.getMessage());
       if (! getUserInfoResult) {
         return;
       }
@@ -176,7 +175,7 @@ export class MadmenService extends AppService {
 
     const errors2 = validate(vo.r, constraints2);
     if (undefined !== errors2) {
-      this.addError(errors2);
+      this.addErrorMessage(errors2);
       return;
     }
 
@@ -220,7 +219,7 @@ export class MadmenService extends AppService {
 
     const errors1 = validate(vo.r, constraints1);
     if (undefined !== errors1) {
-      this.addError(errors1);
+      this.addErrorMessage(errors1);
       return false;
     }
 
@@ -230,8 +229,8 @@ export class MadmenService extends AppService {
     ));
 
     if (madmenDocs.docs.length) {
-      this.addError('app_kb', `Twitterにいるそのキチガイは既に登録済みです。`);
-      this.addError('screen_name', `Twitterにいるそのキチガイは既に登録済みです。`);
+      this.addErrorMessage('app_kb', `Twitterにいるそのキチガイは既に登録済みです。`);
+      this.addErrorMessage('screen_name', `Twitterにいるそのキチガイは既に登録済みです。`);
       return false;
     }
 
@@ -260,12 +259,12 @@ export class MadmenService extends AppService {
         upd_date: serverTimestamp(),
       });
 
-      this.addSuccess(`${vo.r.user_name}がキチガイデータベースに登録されました。`);
+      this.addMessage(`${vo.r.user_name}がキチガイデータベースに登録されました。`);
       return true;
     }
     catch (e: any) {
-      this.addError('Firebaseキチガイドキュメント登録処理でエラーが発生しました。');
-      this.addError('メッセージ:'+e.message);
+      this.addErrorMessage('Firebaseキチガイドキュメント登録処理でエラーが発生しました。');
+      this.addErrorMessage('メッセージ:'+e.message);
       return false;
     }
   }
@@ -294,7 +293,7 @@ export class MadmenService extends AppService {
 
     const errors1 = validate(vo.r, constraints1);
     if (undefined !== errors1) {
-      this.addError(errors1);
+      this.addErrorMessage(errors1);
       return false;
     }
 
@@ -316,7 +315,7 @@ export class MadmenService extends AppService {
     });
 
     if (! vo.none_update_message) {
-      this.addSuccess(`${vo.r.user_name}のデータを更新しました。`);
+      this.addMessage(`${vo.r.user_name}のデータを更新しました。`);
     }
 
     if (newData.hasOwnProperty('account_upd_date')) {
@@ -355,7 +354,7 @@ export class MadmenService extends AppService {
 
     const errors1 = validate(vo, constraints1);
     if (undefined !== errors1) {
-      this.addError(errors1);
+      this.addErrorMessage(errors1);
       return;
     }
 
@@ -365,13 +364,13 @@ export class MadmenService extends AppService {
     // 同じ内容のコメントチェック
     const madmenCheck = await getDoc(madmenDocRef);
     if (! madmenCheck.exists()) {
-      this.addError("Document does not exist!");
+      this.addErrorMessage("Document does not exist!");
       return false;
     }
 
     const checkData = madmenCheck.data();
     if (checkData.hasOwnProperty('comments') && checkData.comments.includes(vo.comment)) {
-      this.addError("既に同じ内容のコメントがあります。\n同じコメントは投稿できません。");
+      this.addErrorMessage("既に同じ内容のコメントがあります。\n同じコメントは投稿できません。");
       return false;
     }
 
@@ -399,16 +398,16 @@ export class MadmenService extends AppService {
         transaction.update(madmenDocRef, newData);
       });
 
-      this.addSuccess("コメントが正常に投稿されました。");
+      this.addMessage("コメントが正常に投稿されました。");
       this.updateDataListRow(vo.id, newData);
       return newData;
     }
     catch (e: any) {
-      this.addError('メッセージ:'+e.message);
+      this.addErrorMessage('メッセージ:'+e.message);
       console.log(e);
     }
 
-    this.addError('コメント投稿処理でエラーが発生しました。');
+    this.addErrorMessage('コメント投稿処理でエラーが発生しました。');
     return false;
   }
 
@@ -459,7 +458,7 @@ export class MadmenService extends AppService {
 
     const errors1 = validate(vo, constraints1);
     if (undefined !== errors1) {
-      this.addError(errors1);
+      this.addErrorMessage(errors1);
       return false;
     }
 
@@ -488,8 +487,8 @@ export class MadmenService extends AppService {
       ipv4 = json.data.ipv4;
     })
     .catch((e: Error) => {
-      this.addError('IPアドレス取得APIでエラーが発生しました。');
-      this.addError('メッセージ:'+e.message);
+      this.addErrorMessage('IPアドレス取得APIでエラーが発生しました。');
+      this.addErrorMessage('メッセージ:'+e.message);
       console.log(e);
     });
 
@@ -502,11 +501,11 @@ export class MadmenService extends AppService {
     // 投票済みチェック
     const madmenCheck = await getDoc(madmenDocRef);
     if (! madmenCheck.exists()) {
-      this.addError("Document does not exist!");
+      this.addErrorMessage("Document does not exist!");
       return false;
     }
     if (madmenCheck.data().voted_ip.includes(ipv4)) {
-      this.addError("既にあなたと同じIPアドレスからの投票があります。\n同じIPアドレスから同じ人へは一回しか投票できません。");
+      this.addErrorMessage("既にあなたと同じIPアドレスからの投票があります。\n同じIPアドレスから同じ人へは一回しか投票できません。");
       return false;
     }
 
@@ -550,21 +549,21 @@ export class MadmenService extends AppService {
       });
 
       if (1 === vo.vote_kb) {
-        this.addSuccess("キチガイに投票しました。\n投票ありがとうございました。");
+        this.addMessage("キチガイに投票しました。\n投票ありがとうございました。");
       }
       else {
-        this.addSuccess("まともに投票しました。\n投票ありがとうございました。");
+        this.addMessage("まともに投票しました。\n投票ありがとうございました。");
       }
 
       this.updateDataListRow(vo.id, newData);
       return newData;
     }
     catch (e: any) {
-      this.addError('メッセージ:'+e.message);
+      this.addErrorMessage('メッセージ:'+e.message);
       console.log(e);
     }
 
-    this.addError('キチガイ投票処理でエラーが発生しました。');
+    this.addErrorMessage('キチガイ投票処理でエラーが発生しました。');
     return false;
   }
 
@@ -589,13 +588,13 @@ export class MadmenService extends AppService {
     if (1 === vo.r.app_kb) {
       const twitter = new TwitterService();
       if (! await twitter.getUserInfo(vo)) {
-        this.addError(twitter.getErrorMessage());
-        this.addSuccess(twitter.getSuccessMessage());
+        this.addErrorMessage(twitter.getErrorMessage());
+        this.addMessage(twitter.getMessage());
         return false;
       }
     }
     else {
-      this.addError('Twitter以外は未対応');
+      this.addErrorMessage('Twitter以外は未対応');
       return false;
     }
     vo.none_update_message = true;
@@ -603,7 +602,7 @@ export class MadmenService extends AppService {
     vo.update_cols = ['screen_name', 'user_name', 'image_url', 'account_upd_date'];
     const result = await this.update(vo);
     if (result) {
-      this.addSuccess(`アカウントデータを最新状態に更新しました。`);
+      this.addMessage(`アカウントデータを最新状態に更新しました。`);
     }
     return result;
   }
@@ -614,15 +613,15 @@ export class MadmenService extends AppService {
  */
 export class MadmenVolume extends AppVolume {
 
-  protected _limit: number = 5;
-  data_reload: number = 0;
+  protected _limit = 5;
+  data_reload = 0;
 
-  id: string = '';
-  app_kb: string = '';
-  app_id: string = '';
-  vote_kb: number = 0;
-  comment: string = '';
-  none_update_message: boolean = false;
+  id = '';
+  app_kb = '';
+  app_id = '';
+  vote_kb = 0;
+  comment = '';
+  none_update_message = false;
 
   protected _sort_key_allows: any = {
     '1': {
@@ -663,48 +662,48 @@ export class MadmenCols {
     }
   }
 
-  id: string = '';
+  id = '';
 
   /**
    * @var アプリ区分 1:Twitter, 2:Instagram, 3:FaceBook, 4:LINE, 5:YouTube
    */
-  app_kb: number = 0;
+  app_kb = 0;
 
   /**
    *
    * @var アプリID TwitterのユーザーID, InstagramのユーザーID, FaceBookのユーザーID, LINEのユーザーID, 5:YouTubeのユーザーID
    */
-  app_id: string = '';
+  app_id = '';
 
   /**
    * @var ユーザー名
    */
-  screen_name: string = '';
+  screen_name = '';
 
   /**
    * @var 表示名
    */
-  user_name: string = '';
+  user_name = '';
 
   /**
    * @var 画像URL
    */
-  image_url: string = '';
+  image_url = '';
 
   /**
    * @var 上げ
    */
-  cnt_agree: number = 0;
+  cnt_agree = 0;
 
   /**
    * @var 下げ
    */
-  cnt_disagree: number = 0;
+  cnt_disagree = 0;
 
   /**
    * @var ポイント
    */
-  cnt_point: number = 0;
+  cnt_point = 0;
 
   /**
    * @var 投票済みIPアドレス
@@ -719,18 +718,18 @@ export class MadmenCols {
   /**
    * @var アカウントデータ更新日時
    */
-    // @ts-ignore
+  // @ts-ignore
   account_upd_date: serverTimestamp = null;
 
   /**
    * @var 登録日時
    */
-    // @ts-ignore
+  // @ts-ignore
   add_date: serverTimestamp = null;
 
   /**
    * @var 更新日時
    */
-    // @ts-ignore
+  // @ts-ignore
   upd_date: serverTimestamp = null;
 }

@@ -1,22 +1,20 @@
-/* eslint-disable import/first */
-
 import React, {useEffect, useState} from "react";
-import {MadmenCols, MadmenService, MadmenVolume} from "../service/MadmenService";
-import {number_format} from "../lib/functions";
+import {MadmenCols, MadmenService, MadmenVolume} from "../services/MadmenService";
+import {number_format} from "../libs/functions";
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import {limitDefaultValue, sortKeyDefaultValue, sortUdDefaultValue} from "../config/appConfig";
+import {AppMessage} from "../types/app.json";
+import Message from "./Message";
 
-function Detail(Props: any) {
+export default function Detail() {
   const params = useParams();
   const navigate = useNavigate();
 
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [normalMessage, setNormalMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [normalMessageAddComment, setNormalMessageAddComment] = useState('');
-  const [errorMessageAddComment, setErrorMessageAddComment] = useState('');
+  const [appMessage, setAppMessage] = useState(new AppMessage());
+  const [appMessageAddComment, setAppMessageAddComment] = useState(new AppMessage());
 
   const defaultR = new MadmenCols();
   defaultR.add_date = {seconds: 0};
@@ -26,8 +24,7 @@ function Detail(Props: any) {
   const [comment, setComment] = useState('');
 
   const doVote = (id: any, app_kb: any, app_id: any, vote_kb: number) => {
-    setNormalMessage('');
-    setErrorMessage('');
+    setAppMessage(new AppMessage());
     const vo = new MadmenVolume();
     vo.id = id;
     vo.app_kb = app_kb;
@@ -35,8 +32,7 @@ function Detail(Props: any) {
     vo.vote_kb = vote_kb;
     const madmen = new MadmenService();
     madmen.doVote(vo).then((newData: any) => {
-      setNormalMessage(madmen.getNormalMessageString());
-      setErrorMessage(madmen.getErrorMessageString());
+      setAppMessage(madmen.message);
       if (! newData) {
         return;
       }
@@ -69,15 +65,13 @@ function Detail(Props: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setNormalMessageAddComment('');
-    setErrorMessageAddComment('');
+    setAppMessageAddComment(new AppMessage());
     const vo = new MadmenVolume();
     vo.comment = comment;
     vo.id = r.id;
     const madmen = new MadmenService();
     madmen.addComment(vo).then((newData: any) => {
-      setNormalMessageAddComment(madmen.getNormalMessageString());
-      setErrorMessageAddComment(madmen.getErrorMessageString());
+      setAppMessageAddComment(madmen.message);
       if (! newData) {
         return;
       }
@@ -119,7 +113,7 @@ function Detail(Props: any) {
   return (
     <React.StrictMode>
 
-      <a href="/" onClick={handleGotoListLinkClick}>戻る</a>
+      <a href="/public" onClick={handleGotoListLinkClick}>戻る</a>
       <br/>
 
       {1 === r.app_kb ? '@' : null}{r.screen_name}
@@ -128,19 +122,18 @@ function Detail(Props: any) {
       <br/><img src={r.image_url} style={{width: '90px'}} alt={r.screen_name}/>
       {/*<br/>登録日時:{YmdHis(r.add_date.seconds)}*/}
 
-      <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: normalMessage}}></div>
-      <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
+      <Message appMessage={appMessage}/>
 
       <button onClick={handleAgreeButtonClick}
-              data-id={r.id}
-              data-app_kb={r.app_kb}
-              data-app_id={r.app_id}>▲キチガイに投票({number_format(cnt_agree)})
+        data-id={r.id}
+        data-app_kb={r.app_kb}
+        data-app_id={r.app_id}>▲キチガイに投票({number_format(cnt_agree)})
       </button>
 
       <button onClick={handleDisagreeButtonClick}
-              data-id={r.id}
-              data-app_kb={r.app_kb}
-              data-app_id={r.app_id}>▼まともに投票({number_format(cnt_disagree)})
+        data-id={r.id}
+        data-app_kb={r.app_kb}
+        data-app_id={r.app_id}>▼まともに投票({number_format(cnt_disagree)})
       </button>
 
       <h3>コメント一覧</h3>
@@ -153,14 +146,13 @@ function Detail(Props: any) {
 
       <form onSubmit={handleSubmit}>
 
-        <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: normalMessageAddComment}}></div>
-        <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessageAddComment}}></div>
+        <Message appMessage={appMessageAddComment}/>
 
         <textarea name="comment"
-                  value={comment}
-                  onChange={handleCommentChange}
-                  cols={30}
-                  rows={6}
+          value={comment}
+          onChange={handleCommentChange}
+          cols={30}
+          rows={6}
         ></textarea>
 
         <br/>
@@ -170,5 +162,3 @@ function Detail(Props: any) {
     </React.StrictMode>
   );
 }
-
-export default Detail;

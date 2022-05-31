@@ -1,9 +1,7 @@
-/* eslint-disable import/first */
-
 import React from "react";
-import AddForm from "../component/AddForm";
-import List from "../component/List";
-import Title from "../component/Title";
+import AddForm from "./AddForm";
+import List from "./List";
+import Title from "./Title";
 import Detail from "./Detail";
 
 export function App() {

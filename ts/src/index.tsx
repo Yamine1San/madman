@@ -1,13 +1,11 @@
-/* eslint-disable import/first */
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {BrowserRouter, Route, Routes,} from "react-router-dom";
 import "./css/site.css";
 import reportWebVitals from "./reportWebVitals";
-import {App, AppDetail} from "./component/App";
-import NotFound from "./component/NotFound";
-import ScrollToTop from "./component/ScrollToTop";
+import {App, AppDetail} from "./components/App";
+import NotFound from "./components/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 const rootElement = document.getElementById('root');
 if (! rootElement) throw new Error('Failed to find the root element');

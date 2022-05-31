@@ -1,119 +1,77 @@
 /**
  *
  */
-import {AppJson} from "../types/app.json";
+import {AppMessage, InterfaceAppJson} from '../types/app.json';
+import {addMessage, getMessageString} from '../libs/message.functions';
 
 export class AppService {
-  private message: any = {
-    messages: {},
-    errors: {},
+
+  message: AppMessage;
+
+  constructor() {
+    this.message = new AppMessage();
+  }
+
+  addMessage = (key: any, msg?: any) => {
+    addMessage(this.message.messages, key, msg);
   };
 
-  addSuccess = (key: any, msg?: any) => {
-    this._addMessage('messages', key, msg);
-  }
+  addWarningMessage = (key: any, msg?: any) => {
+    addMessage(this.message.warnings, key, msg);
+  };
 
-  addError = (key: any, msg?: any) => {
-    this._addMessage('errors', key, msg);
-  }
+  addErrorMessage = (key: any, msg?: any) => {
+    addMessage(this.message.errors, key, msg);
+  };
 
-  private _addMessage = (message_type: string, key: any, msg?: any) => {
-    if ('object' === typeof key) {
-      for (const k of Object.keys(key)) {
-        if ('object' === typeof key[k]) {
-          let key_only = 1;
-          for (const l of Object.keys(key[k])) {
-            key_only = 0;
-            this.__addMessage(message_type, l, key[k][l]);
-          }
-          if (key_only) {
-            this.__addMessage(message_type, k);
-          }
-          continue;
-        }
-        this.__addMessage(message_type, k, key[k]);
-      }
-      return;
-    }
-    this.__addMessage(message_type, key, msg);
-  }
+  getMessage = (key?: any) => {
+    return this._getMessage(this.message.messages, key);
+  };
 
-  private __addMessage = (message_type: string, key: any, msg?: any) => {
-
-    if (! this.message[message_type].hasOwnProperty(key)) {
-      this.message[message_type][key] = {};
-    }
-
-    if (undefined !== msg && null !== msg) {
-      this.message[message_type][key][msg] = null;
-    }
-  }
+  getWarningMessage = (key?: any) => {
+    return this._getMessage(this.message.warnings, key);
+  };
 
   getErrorMessage = (key?: any) => {
     return this._getMessage(this.message.errors, key);
-  }
-
-  getSuccessMessage = (key?: any) => {
-    return this._getMessage(this.message.messages, key);
-  }
+  };
 
   private _getMessage = (list: any, key?: any) => {
     if (undefined === key) {
       return list;
     }
     return list[key];
-  }
+  };
+
+  getMessageString = (separator = '<br>') => {
+    return getMessageString(this.message.messages, separator);
+  };
+
+  getWarningMessageString = (separator = '<br>') => {
+    return getMessageString(this.message.warnings, separator);
+  };
 
   getErrorMessageString = (separator = '<br>') => {
-    return this._getMessageString(this.message.errors, separator);
-  }
+    return getMessageString(this.message.errors, separator);
+  };
 
-  getNormalMessageString = (separator = '<br>') => {
-    return this._getMessageString(this.message.messages, separator);
-  }
-
-  private _getMessageString = (list: any, separator = '<br>') => {
-    const messages: any = {};
-    for (const key of Object.keys(list)) {
-      let key_only = 1;
-      if ('object' === typeof list[key]) {
-        for (const k of Object.keys(list[key])) {
-          key_only = 0;
-          if (null === (list[key][k])) {
-            messages[k] = null;
-            continue;
-          }
-          messages[k+':'+list[key][k]] = null;
-        }
-        if (key_only) {
-          messages[key] = null;
-        }
-        continue;
-      }
-      for (const msg of Object.keys(list[key])) {
-        key_only = 0;
-        messages[key+':'+msg] = null;
-      }
-      if (key_only) {
-        messages[key] = null;
-      }
-    }
-    return Object.keys(messages).join(separator).replace("\n", separator);
-  }
-
-  setJsonMessage = (json: AppJson) => {
+  setJsonMessage = (json: InterfaceAppJson) => {
     if (! json.hasOwnProperty('message')) {
       return;
     }
 
     if (json.message.hasOwnProperty('messages')) {
-      this.addSuccess(json.message.messages);
+      this.addMessage(json.message.messages);
+    }
+
+    if (json.message.hasOwnProperty('warnings')) {
+      this.addWarningMessage(json.message.warnings);
     }
 
     if (json.message.hasOwnProperty('errors')) {
-      this.addError(json.message.errors);
+      this.addErrorMessage(json.message.errors);
     }
-  }
+  };
 }
 
 /**
@@ -121,19 +79,19 @@ export class AppService {
  */
 export class AppVolume {
 
-  protected _page: number = 1;
-  protected _limit: number = 100;
-  protected _max_limit: number = 1000;
-  protected _total: number = 0;
+  protected _page = 1;
+  protected _limit = 100;
+  protected _max_limit = 1000;
+  protected _total = 0;
 
   protected _sort_key_allows: any = {};
-  protected _sort_key: string | any = '1';
-  protected _sort_ud: string = 'asc';
+  protected _sort_key: string|any = '1';
+  protected _sort_ud = 'asc';
 
 
   rs: any[] = [];
   r: any;
-  result: boolean = false;
+  result = false;
   update_cols: string[] = [];
 
   constructor(params?: any) {
@@ -203,7 +161,7 @@ export class AppVolume {
    *
    * @param page 明細ページング処理のページ番号
    */
-  set_page(page: number | string | undefined | null): AppVolume {
+  set_page(page: number|string|undefined|null): AppVolume {
     if (undefined === page || null === page || '' === page) {
       return this;
     }
@@ -232,7 +190,7 @@ export class AppVolume {
   /**
    * @param limit 明細ページング処理の明細数
    */
-  set_limit(limit: number | string | undefined | null): AppVolume {
+  set_limit(limit: number|string|undefined|null): AppVolume {
     if (undefined === limit || null === limit || '' === limit) {
       return this;
     }
@@ -347,7 +305,7 @@ export class AppVolume {
   /**
    * @param sort_key
    */
-  set_sort_key(sort_key: string | undefined | null): AppVolume {
+  set_sort_key(sort_key: string|undefined|null): AppVolume {
     if (undefined === sort_key || null === sort_key || '' === sort_key) {
       return this;
     }
@@ -368,7 +326,7 @@ export class AppVolume {
   /**
    * @param sort_ud 'asc' OR 'desc'
    */
-  set_sort_ud(sort_ud: string | undefined | null): AppVolume {
+  set_sort_ud(sort_ud: string|undefined|null): AppVolume {
     if (undefined === sort_ud || null === sort_ud || '' === sort_ud) {
       return this;
     }
@@ -387,14 +345,7 @@ export class AppVolume {
    * @param sort_key
    * @param sort_ud 'asc' OR 'desc'
    */
-  add_sort_key(sort_key: string | {}, sort_ud?: string): AppVolume {
-    if ('object' === typeof sort_key) {
-      for (const tmp of Object.keys(sort_key)) {
-        this._add_sort_key(tmp, sort_ud);
-      }
-      return this;
-    }
-    // @ts-ignore
+  add_sort_key(sort_key: string|object, sort_ud?: string): AppVolume {
     this._add_sort_key(sort_key, sort_ud);
     return this;
   }
@@ -403,7 +354,15 @@ export class AppVolume {
    * @param sort_key
    * @param sort_ud 'asc' OR 'desc'
    */
-  private _add_sort_key(sort_key: string, sort_ud?: string) {
+  private _add_sort_key(sort_key: string|object, sort_ud?: string) {
+
+    if ('object' === typeof sort_key) {
+      for (const tmp of Object.keys(sort_key)) {
+        this._add_sort_key(tmp, sort_ud);
+      }
+      return this;
+    }
+
     if (! this.is_allowed_key(sort_key)) {
       return;
     }
@@ -417,7 +376,7 @@ export class AppVolume {
     this._sort_key[sort_key] = this._get_sort_ud(sort_ud);
   }
 
-  private _get_sort_ud(sort_ud: string | undefined) {
+  private _get_sort_ud(sort_ud: string|undefined) {
     if (undefined === sort_ud || null === sort_ud || '' === sort_ud) {
       return 'asc';
     }

@@ -1,8 +1,6 @@
-/* eslint-disable import/first */
-
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {MadmenCols, MadmenService, MadmenVolume} from "../service/MadmenService";
+import {MadmenCols, MadmenService, MadmenVolume} from "../services/MadmenService";
 import Card from './Card';
 import {limitDefaultValue, sortKeyDefaultValue, sortOrderMap, sortUdDefaultValue} from "../config/appConfig";
 

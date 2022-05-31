@@ -1,32 +1,29 @@
-/* eslint-disable import/first */
-
 import React, {useState} from "react";
 import {appKbDefaultValue, appKbMap, limitDefaultValue} from "../config/appConfig";
-import {MadmenService, MadmenVolume} from "../service/MadmenService";
-import {toHalfWidth} from "../lib/functions";
+import {MadmenService, MadmenVolume} from "../services/MadmenService";
+import {toHalfWidth} from "../libs/functions";
 import {useNavigate, useParams} from "react-router-dom";
+import {AppMessage} from "../types/app.json";
+import Message from "./Message";
 
 /**
  *
  */
-const AddForm = () => {
+export default function AddForm() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [normalMessage, setNormalMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [appMessage, setAppMessage] = useState(new AppMessage());
   const [app_kb, setAppkb] = useState(appKbDefaultValue);
   const [screen_name, setScreenName] = useState('');
 
   const handleAppkbChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNormalMessage('');
-    setErrorMessage('');
+    setAppMessage(new AppMessage());
     setAppkb(e.target.value);
   };
 
   const handleScreenNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNormalMessage('');
-    setErrorMessage('');
+    setAppMessage(new AppMessage());
     setScreenName(toHalfWidth(e.target.value));
   };
 
@@ -40,8 +37,7 @@ const AddForm = () => {
     // 追加実行
     const madmen = new MadmenService();
     madmen.add(vo).then(() => {
-      setNormalMessage(madmen.getNormalMessageString());
-      setErrorMessage(madmen.getErrorMessageString());
+      setAppMessage(madmen.message);
       if (vo.result) {
         // 初期化
         setAppkb('1');
@@ -65,8 +61,8 @@ const AddForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: normalMessage}}></div>
-      <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
+      <Message appMessage={appMessage}/>
+
       <label>
         アプリ：
         <select value={app_kb} onChange={handleAppkbChange}>
@@ -79,15 +75,13 @@ const AddForm = () => {
       <label>
         ユーザーID：
         <input type="text"
-               name="screen_name"
-               value={screen_name}
-               onChange={handleScreenNameChange}
-               placeholder="@screen_name"/>
+          name="screen_name"
+          value={screen_name}
+          onChange={handleScreenNameChange}
+          placeholder="@screen_name"/>
       </label>
       <br/>
       <input type="submit" value="登録する"/>
     </form>
   );
-};
-
-export default AddForm;
+}

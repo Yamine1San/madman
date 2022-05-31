@@ -1,16 +1,28 @@
 @charset "UTF-8";
 .card {
-border:1px solid #ddd;
-  padding:10px;
-  margin:10px 0;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
 }
 
 button {
-  margin-top:10px;
-margin-right:10px;
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
-a ,
-a:visited  {
+a,
+a:visited {
   text-decoration: none;
+}
+
+.message-message {
+  color: blue;
+}
+
+.message-warning {
+  color: #8a8a00;
+}
+
+.message-error {
+  color: red;
 }

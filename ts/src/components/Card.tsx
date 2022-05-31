@@ -1,8 +1,6 @@
-/* eslint-disable import/first */
-
 import React, {useEffect, useState} from "react";
-import {MadmenService, MadmenVolume} from "../service/MadmenService";
-import {number_format, YmdHis} from "../lib/functions";
+import {MadmenService, MadmenVolume} from "../services/MadmenService";
+import {number_format, YmdHis} from "../libs/functions";
 import {
   limitDefaultValue,
   sortKeyDefaultValue,
@@ -10,20 +8,20 @@ import {
   updateAccountDataInterval
 } from "../config/appConfig";
 import {createSearchParams, useNavigate, useParams} from "react-router-dom";
+import {AppMessage} from "../types/app.json";
+import Message from "./Message";
 
-function Card(Props: any) {
+export default function Card(Props: any) {
   const params = useParams();
   const navigate = useNavigate();
 
   const [r, setR] = useState(Props.r);
-  const [normalMessage, setNormalMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [appMessage, setAppMessage] = useState(new AppMessage());
   const [cnt_agree, setCntAgree] = useState(r.cnt_agree);
   const [cnt_disagree, setCntDisAgree] = useState(r.cnt_disagree);
 
   const doVote = (id: any, app_kb: any, app_id: any, vote_kb: number) => {
-    setNormalMessage('');
-    setErrorMessage('');
+    setAppMessage(new AppMessage());
     const vo = new MadmenVolume();
     vo.id = id;
     vo.app_kb = app_kb;
@@ -31,8 +29,7 @@ function Card(Props: any) {
     vo.vote_kb = vote_kb;
     const madmen = new MadmenService();
     madmen.doVote(vo).then((newData: any) => {
-      setNormalMessage(madmen.getNormalMessageString());
-      setErrorMessage(madmen.getErrorMessageString());
+      setAppMessage(madmen.message);
       if (! newData) {
         return;
       }
@@ -87,8 +84,7 @@ function Card(Props: any) {
       vo.r = r;
       const madmen = new MadmenService();
       madmen.updateAccountData(vo).then((result) => {
-        setNormalMessage(madmen.getNormalMessageString());
-        setErrorMessage(madmen.getErrorMessageString());
+        setAppMessage(madmen.message);
         if (result) {
           setR(vo.r);
         }
@@ -105,23 +101,22 @@ function Card(Props: any) {
       <br/><img src={r.image_url} style={{width: '90px'}} alt={r.screen_name}/>
       <br/>登録日時:{YmdHis(r.add_date.seconds)}
       <br/>データ更新日時:{YmdHis(r.account_upd_date.seconds)}
-      <div style={{color: 'blue'}} dangerouslySetInnerHTML={{__html: normalMessage}}></div>
-      <div style={{color: 'red'}} dangerouslySetInnerHTML={{__html: errorMessage}}></div>
+
+      <Message appMessage={appMessage}/>
+
       <button onClick={handleAgreeButtonClick}
-              data-id={r.id}
-              data-app_kb={r.app_kb}
-              data-app_id={r.app_id}>▲キチガイに投票({number_format(cnt_agree)})
+        data-id={r.id}
+        data-app_kb={r.app_kb}
+        data-app_id={r.app_id}>▲キチガイに投票({number_format(cnt_agree)})
       </button>
 
       <button onClick={handleDisagreeButtonClick}
-              data-id={r.id}
-              data-app_kb={r.app_kb}
-              data-app_id={r.app_id}>▼まともに投票({number_format(cnt_disagree)})
+        data-id={r.id}
+        data-app_kb={r.app_kb}
+        data-app_id={r.app_id}>▼まともに投票({number_format(cnt_disagree)})
       </button>
 
       <button onClick={handleDetailButtonClick} data-id={r.id}>コメントを見る({number_format(r.comments.length)})</button>
     </React.StrictMode>
   );
 }
-
-export default Card;

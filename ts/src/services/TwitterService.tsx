@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import {AppService, AppVolume} from "./AppService";
 import {MadmenVolume} from "./MadmenService";
 import {mdApiKey, urlGetTwitterUser} from "../config/appConfig";
@@ -36,7 +35,7 @@ export class TwitterService extends AppService {
         // TwitterAPI
         if (json.data.hasOwnProperty('errors')) {
           json.data.errors.forEach((error: any) => {
-            this.addError('twitter', 'TwitterAPI '+error.code+':'+error.message);
+            this.addErrorMessage('twitter', 'TwitterAPI '+error.code+':'+error.message);
           });
           return;
         }
@@ -47,8 +46,8 @@ export class TwitterService extends AppService {
         result = true;
       })
       .catch((e: Error) => {
-        this.addError('Twitterアカウントのデータを取得出来ませんでした。');
-        this.addError('メッセージ:'+e.message);
+        this.addErrorMessage('Twitterアカウントのデータを取得出来ませんでした。');
+        this.addErrorMessage('メッセージ:'+e.message);
         console.log(e);
       });
 
@@ -57,10 +56,10 @@ export class TwitterService extends AppService {
       }
     }
     catch (e: any) {
-      this.addError('メッセージ:'+e.message);
+      this.addErrorMessage('メッセージ:'+e.message);
       console.log(e);
     }
-    this.addError('Twitterアカウントのデータを取得出来ませんでした。');
+    this.addErrorMessage('Twitterアカウントのデータを取得出来ませんでした。');
     return false;
   }
 }

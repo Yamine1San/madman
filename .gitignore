@@ -72,5 +72,4 @@ yarn.lock
 .sass-cache
 /src/css
 
-.idea
 *.lnk

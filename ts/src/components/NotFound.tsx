@@ -1,5 +1,3 @@
-/* eslint-disable import/first */
-
 import React from "react";
 
 export default function NotFound() {

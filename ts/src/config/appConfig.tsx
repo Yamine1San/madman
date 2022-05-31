@@ -14,7 +14,7 @@ export const urlGetIpAddress: string =
     : 'https://yamine1san.ddns.net/madman/get/ip-address';
 
 export const appKbDefaultValue = '1';
-export const appKbMap: Map<number | string, string> = new Map();
+export const appKbMap: Map<number|string, string> = new Map();
 appKbMap.set('', '');
 appKbMap.set(1, 'Twitter');
 appKbMap.set(2, 'Instagram(そのうち)');
